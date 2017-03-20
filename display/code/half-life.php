@@ -8,7 +8,7 @@
  *
  * half-life.php
  *
- * This PHP file is a script for scraping Half-Life server information in real time.
+ * This PHP file is a script for scraping Half-Life (Valve) server information in real time.
  *
  */
 
@@ -23,12 +23,8 @@
 $serverIP = "127.0.0.1";
 $serverPort = 27016;    // SRCDS Default Port is: 27015.
 
-// This will return server status. "Online"/"Offline" ..
+// This will later on return server status. "Online"/"Offline" ..
 $serverStatus;
-/**
-$fp = fsockopen($serverIP, $serverPort, $errno, $errstr, 5);
-stream_set_timeout($fp, 5);
-*/
 
 // Let's begin.
 
@@ -89,7 +85,12 @@ class serverStatus {
     function serverStatus($serverIP, $serverPort) {
         $this->_ip = $serverIP;
         $this->_port = $serverPort;
-        $this->_seed = ""; // TODO: update seed
+        $this->_seed = "\x0a\x3c\x21\x2d\x2d\x20\x20\x20\x20\x20\x20\x20\x53\x65\x72\x76\x65\x72\x20\x6d\x61\x64\x51\x75\x65\x72\x79\x20\x43"
+            ."\x6c\x61\x73\x73\x20\x20\x20\x20\x20\x20\x20\x2d\x2d\x3e\x0a\x3c\x21\x2d\x2d\x20\x20\x20\x20\x43\x6f\x70\x79\x72\x69"
+            ."\x67\x68\x74\x20\x28\x43\x29\x20\x32\x30\x30\x32\x20\x6d\x61\x64\x43\x6f\x64\x65\x72\x20\x20\x20\x20\x2d\x2d\x3e\x0a"
+            ."\x3c\x21\x2d\x2d\x20\x20\x20\x6d\x61\x64\x63\x6f\x64\x65\x72\x40\x73\x74\x75\x64\x65\x6e\x74\x2e\x75\x74\x64\x61\x6c"
+            ."\x6c\x61\x73\x2e\x65\x64\x75\x20\x20\x20\x2d\x2d\x3e\x0a\x3c\x21\x2d\x2d\x20\x68\x74\x74\x70\x3a\x2f\x2f\x77\x77\x77"
+            ."\x2e\x75\x74\x64\x61\x6c\x6c\x61\x73\x2e\x65\x64\x75\x2f\x7e\x6d\x61\x64\x63\x6f\x64\x65\x72\x20\x2d\x2d\x3e\x0a\x0a";
         $this->_arr = array_pad($this->_arr, 21, 0);
         $this->_socket = fsockopen("udp://" . $this->_ip, $this->_port, $errno, $errstr, 3);
         socket_set_timeout($this->_socket, 5, 0);
