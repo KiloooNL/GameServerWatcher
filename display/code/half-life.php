@@ -23,8 +23,12 @@
 $serverIP = "127.0.0.1";
 $serverPort = 27016;    // SRCDS Default Port is: 27015.
 
+// This will return server status. "Online"/"Offline" ..
+$serverStatus;
+/**
 $fp = fsockopen($serverIP, $serverPort, $errno, $errstr, 5);
 stream_set_timeout($fp, 5);
+*/
 
 // Let's begin.
 
@@ -88,7 +92,7 @@ class serverStatus {
         $this->_seed = ""; // TODO: update seed
         $this->_arr = array_pad($this->_arr, 21, 0);
         $this->_socket = fsockopen("udp://" . $this->_ip, $this->_port, $errno, $errstr, 3);
-        socket_set_timeout($this->_socket, 1, 0);
+        socket_set_timeout($this->_socket, 5, 0);
 
         if($tmp = $this->_sockState()) {
             // echo $tmp;
@@ -111,7 +115,7 @@ class serverStatus {
 
     // Obtains a ping value to the server
     function _ping() {
-        debug("[Getting Ping");
+        debug("[Getting Ping]");
         if($tmp = $this->_sockState()) {
             // echo $tmp;
             debug("[Error in socket]");
@@ -191,7 +195,7 @@ class serverStatus {
                     $buffer = substr($buffer, 1);
                     $this->_arr[$count] = "";
                     if (ord($tmp != 0)) {
-                        $this->_arr[$count] .= $tmp; // mod website [12]
+                        $this->_arr[$count] .= $tmp; // [12] Mod website
                     }
                 } while(ord($tmp) != 0);
                 $count++;
@@ -202,7 +206,7 @@ class serverStatus {
 
                     $this->_arr[$count] = "";
                     if(ord($tmp) != 0) {
-                        $this->_arr[$count] .= $tmp; // mod FTP [13]
+                        $this->_arr[$count] .= $tmp; // [13] Mod FTP
                     }
                 } while(ord($tmp != 0));
                 $count++; // [14] = unused
@@ -224,15 +228,15 @@ class serverStatus {
                 } $count++;
 
                 // [17] Server only
-                $this->_arr[$count++] = ord(substr(($buffer, 0, 1));
+                $this->_arr[$count++] = ord(substr($buffer, 0, 1));
                 $buffer = substr($buffer, 1);
 
                 // [18] Custom client.dll
-                $this->_arr[$count++] = ord(substr(($buffer, 0, 1));
+                $this->_arr[$count++] = ord(substr($buffer, 0, 1));
                 $buffer = substr($buffer, 1);
 
                 // [19] Secure.
-                $this->_arr[$count++] = ord(substr(($buffer, 0, 1));
+                $this->_arr[$count++] = ord(substr($buffer, 0, 1));
                 $buffer = substr($buffer, 1);
             } else {
                 for($i = 0; $i < 8; $i++) {
@@ -281,7 +285,7 @@ class serverStatus {
                 $tfrags = substr($buffer, 0, 4);
                 $buffer = substr($buffer, 4);
                 $rtime = getFloat32($tmp);
-                $arr[$i] = array("Index" => $tind, "Name" => $tname, "Frags" => $rfrags, "Time" => $rtime;
+                $arr[$i] = array("Index" => $tind, "Name" => $tname, "Frags" => $rfrags, "Time" => $rtime);
             }
         }
         $this->_players = $arr;
@@ -312,7 +316,7 @@ class serverStatus {
             $multi = 1;
             for($i = 0; $i < 4; $i++) {
                 $tmp = substr($buffer, 0, 1);
-                $buffer = substr(($buffer, 1);
+                $buffer = substr($buffer, 1);
             }
             $tmp = substr($buffer, 0, 5); // ÿÿÿÿE = Rules reponse
             $buffer = substr($buffer, 5);
@@ -325,7 +329,7 @@ class serverStatus {
         while($i < $count) {
             if(strlen($buffer) == 0 && $multi == 1) {
                 $buffer = $this->_getMore();
-                $tmp = substr($buffer, 0, 5) // pÿÿÿ_
+                $tmp = substr($buffer, 0, 5); // pÿÿÿ_
                 $buffer = substr($buffer, 5);
                 $buffer = substr($buffer, 4);
             }
@@ -351,6 +355,8 @@ class serverStatus {
     }
 
     function _sockState() {
+
+
         if(!$this->_socket) {
             return 8;
         }
@@ -417,7 +423,7 @@ class serverStatus {
         return $this->_errorcode;
     }
 
-    function isup() {
+    function isUp() {
         /************************************
          * int isup(char * ip, long port);
          * Return values:
@@ -444,21 +450,25 @@ class serverStatus {
     }
 
 
-    function Address  (){ return $this->_arr[ 0]; }
-    function Hostname (){ return $this->_arr[ 1]; }
-    function Map      (){ return $this->_arr[ 2]; }
-    function ModName  (){ return $this->_arr[ 3]; }
-    function Active   (){ return $this->_arr[ 5]; }
-    function Max      (){ return $this->_arr[ 6]; }
-    /
+    function Address  (){ return $this->_arr[ 0]; }     // IP Address
+    function Hostname (){ return $this->_arr[ 1]; }     // Hostname / Port
+    function Map      (){ return $this->_arr[ 2]; }     // Current map
+    function ModName  (){ return $this->_arr[ 3]; }     // Server mod
+    function Active   (){ return $this->_arr[ 5]; }     // Current players
+    function Max      (){ return $this->_arr[ 6]; }     // Max players
+
     /** Don't always need these, so don't call if not needed */
-    function Protocol(){ return $this->_arr[ 7]; }
-    function SvrType (){ return $this->_arr[ 8]; }
-    function SvrOS   (){ return $this->_arr[ 9]; }
-    function Pass    (){ return $this->_arr[10]; }
-    function IsMod   (){ return $this->_arr[11]; }
-    function SvrOnly (){ return $this->_arr[17]; }
-    function Custom  (){ return $this->_arr[18]; }
+    function Protocol(){ return $this->_arr[ 7]; }      // Protocol
+    function SvrType (){ return $this->_arr[ 8]; }      // Server Type
+    function SvrOS   (){ return $this->_arr[ 9]; }      // Server OS
+    function Pass    (){ return $this->_arr[10]; }      // Server Password
+    function IsMod   (){ return $this->_arr[11]; }      // Server is running mod?
+    function ModHTTP (){ return $this->_arr[12]; }      // Mod website
+    function ModFTP  (){ return $this->_arr[13]; }      // Mod FTP
+    function SvrVer  (){ return $this->_arr[15]; }      // Server version
+    function SvrSize (){ return $this->_arr[16]; }      // Server size
+    function SvrOnly (){ return $this->_arr[17]; }      // Server only
+    function Custom  (){ return $this->_arr[18]; }      // Is server VAC secure?
 }
 
 /**
@@ -469,6 +479,47 @@ $gameServer = new serverStatus($serverIP, $serverPort);
 $gameServer->getDetails();
 $gameServer->getPlayers();
 
-$theMod = $gameServer->ModName();
-$theMap = $gameServer->Map();
+$svAddress   = $gameServer->Address();
+$svHostName  = $gameServer->Hostname();
+$svMap       = $gameServer->Map();
+$svModName   = $gameServer->ModName();
+$svActive    = $gameServer->Active();
+$svMax       = $gameServer->Max();
+$svProtocol  = $gameServer->Protocol();
+$svSvrType   = $gameServer->SvrType();
+$svSvrOS     = $gameServer->SvrOS();
+$svPass      = $gameServer->Pass();
+$svIsMod     = $gameServer->IsMod();
+$svModHTTP   = $gameServer->ModHTTP();
+$svModFTP    = $gameServer->ModFTP();
+$svSvrVer    = $gameServer->SvrVer();
+$svSvrSize   = $gameServer->SvrSize();
+$svSvrOnly   = $gameServer->SvrOnly();
+$svCustom    = $gameServer->Custom();
 
+// Find the server's IP
+function getServerIP($string) {
+    $colpos = strrpos($string, ":");
+    $string = substr($string, 0, $colpos);
+    return $string;
+}
+
+// Find the server's port
+// Must pass IP ($svAddress) as the $string var
+function getServerPort($string) {
+    $string = substr(strrchr($string, ":"), 1); // originally : $string = substr(strrchr($string, ":", 1));
+    return $string;
+}
+
+$svAddress = getServerIP($svAddress);
+$svPort = getServerPort($svAddress);
+
+
+if($gameServer->isUp() == 0 || 1 || -1) {
+    $serverStatus = "Offline";
+} else {
+    $serverStatus = "Online";
+}
+?>
+
+<img src="valve_img.php?svName="<?php echo $svHostName;?>"&svAddress="<?php echo $svAddress; ?>"&svPort="<?php echo $svPort; ?>"&serverStatus=<?php echo $serverStatus; ?>&svActive=<?php echo $svActive;?>&svMax=<?php echo $svMax; ?>&sv_rank=1st&sv_map=<?php echo $svMap;?>" class="border" width="560" height="95" align="middle" />

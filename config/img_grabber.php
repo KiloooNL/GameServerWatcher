@@ -41,6 +41,9 @@ ini_set('max_execution_time', 300);
  * 1 - In the future it would be nice to scrape this array from a text file for easier editing,
  * Or pull a list of published maps from a website that may have this info already.
  *
+ * 1 - UPDATE: Alternatively, rather than reading from a text file, get a list of the files in the /maps/ folder, remove the file extension and use the file list as array data
+ *             This will automate the process.
+ *
  * 2 - At the moment when we call a function from getMapImages, it will save the scraped image to the root folder of img_grabber.php
  * This should be changed so it saves to the games /image/mapimg/$game/ folder instead. There should later be a variable defined in config/config.php
  * to set the default dir for images as well.
