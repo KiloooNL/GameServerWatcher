@@ -28,6 +28,7 @@ ini_set('max_execution_time', 300);
  * 	css:           scrape Counter-Strike :Source images.
  *  quake3:        scrap Quake 3 images.
  *  hl1:           scrape Half-Life images.
+ *  saveImage:     saves the image.
  *
  * Arrays:
  *  So far the arrays are as follows:
@@ -37,8 +38,15 @@ ini_set('max_execution_time', 300);
  * Each array contains a list of maps, with continually growing data.
  *
  * TODO:
- * In the future it would be nice to scrape this array from a text file for easier editing,
+ * 1 - In the future it would be nice to scrape this array from a text file for easier editing,
  * Or pull a list of published maps from a website that may have this info already.
+ *
+ * 2 - At the moment when we call a function from getMapImages, it will save the scraped image to the root folder of img_grabber.php
+ * This should be changed so it saves to the games /image/mapimg/$game/ folder instead. There should later be a variable defined in config/config.php
+ * to set the default dir for images as well.
+ *
+ * 2 - UPDATE: there is now a saveImage() function that saves the image to a folder based on the $imgDirectory string, per each function.
+ *             still needs implementing into config.php
  */
 
 class getMapImages {
@@ -58,6 +66,8 @@ class getMapImages {
 	}
 
 	public function css() {
+        $imgDirectory = "mapimg/css";
+
 		$cssMaps = array("aim_47th_v2.jpg",
 		"css_mc_origin.jpg",
 		"dr3w_gg_paintabll_forrest.jpg",
@@ -108,20 +118,17 @@ class getMapImages {
 		"he_canyon-fight_v2.jpg",
 		"skullz_sandstorm.jpg");
 
-		try {
-			foreach($cssMaps as $mapImg) {
-				$url = $this->baseURL . $this->cssDir . $mapImg;
-				$data = file_get_contents($url);
-				$handle = fopen(basename($url), 'w');
-				fwrite($handle, $data);
-				fclose($handle);
-			}
-		} catch (Exception $exception) {
-			echo "There was an error. <br>".$exception;
-		}
+        foreach($cssMaps as $mapImg) {
+            $url = $this->baseURL . $this->quakeDir . $mapImg;
+            $data = file_get_contents($url);
+            $handle = fopen(basename($url), 'w');
+            $this->saveImage($handle, $data, $imgDirectory); // Save image
+        }
 	}
 
 	public function quake3() {
+        $imgDirectory = "mapimg/quake3";
+
 		$quakeMaps = array("q3ctf1.jpg",
 			"q3ctf2.jpg",
 			"q3ctf3.jpg",
@@ -153,18 +160,34 @@ class getMapImages {
 			"q3tourney5.jpg",
 			"q3tourney6.jpg");
 
-		try {
-			foreach($quakeMaps as $mapImg) {
-				$url = $this->baseURL . $this->quakeDir . $mapImg;
-				$data = file_get_contents($url);
-				$handle = fopen(basename($url), 'w');
-				fwrite($handle, $data);
-				fclose($handle);
-			}
-		} catch (Exception $exception) {
-			echo "There was an error. <br>".$exception;
-		}
+        foreach($quakeMaps as $mapImg) {
+            $url = $this->baseURL . $this->quakeDir . $mapImg;
+            $data = file_get_contents($url);
+            $handle = fopen(basename($url), 'w');
+            $this->saveImage($handle, $data, $imgDirectory); // Save image
+        }
 	}
+
+    public function saveImage($filename, $filecontent, $folderPath) {
+        // Check if folder exists, if not create it.
+        if(strlen($filename > 0)) {
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath);
+            }
+
+            $file = @fopen($folderPath . DIRECTORY_SEPARATOR . $filename, "W");
+            if ($file != false) {
+                fwrite($file, $filecontent);
+                fclose($file);
+
+                return 1; // Image saved
+            }
+            // An error occurred trying to save the image.
+            return "<tr><td><br>An error occurred trying to save the file. Check folder \"$folderPath\" for write permissions.<br></td></tr>";
+        }
+        // Bad file name
+        return "<tr><td><br>An error occurred with the filename: $filename. The image was not saved.<br></td></tr>";
+    }
 }
 
 // Creating an instance for debugging.
