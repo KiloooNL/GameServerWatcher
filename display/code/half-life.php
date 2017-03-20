@@ -27,7 +27,6 @@ $serverPort = 27016;    // SRCDS Default Port is: 27015.
 $serverStatus;
 
 // Let's begin.
-
 define("ERROR_NOERROR", 0);
 define("ERROR_NOSERVER", -1);
 define("ERROR_INSOCKET", -2);
@@ -319,7 +318,7 @@ class serverStatus {
                 $tmp = substr($buffer, 0, 1);
                 $buffer = substr($buffer, 1);
             }
-            $tmp = substr($buffer, 0, 5); // ÿÿÿÿE = Rules reponse
+            $tmp = substr($buffer, 0, 5); // ÿÿÿÿE = Rules response
             $buffer = substr($buffer, 5);
         }
         $count = ord(substr($buffer, 0, 1));
@@ -449,7 +448,6 @@ class serverStatus {
         }
 
     }
-
 
     function Address  (){ return $this->_arr[ 0]; }     // IP Address
     function Hostname (){ return $this->_arr[ 1]; }     // Hostname / Port

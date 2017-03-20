@@ -56,3 +56,4 @@ function pageLoadTime() {
     $start = time; // start
 }
 
+?>
