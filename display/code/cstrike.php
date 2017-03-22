@@ -41,6 +41,9 @@ function sourceQuery($serverIP)
 
     $result = "";
 
+    /* TODO: In the original code, we used $serverIP like: $serverIP = 127.0.0.1:27015;
+       however, this isn't really needed and we can just make 2 vars, $serverIP and $serverPort.
+       This code just exists from the original code and should be removed on revision. */
     $cut = explode(":", $serverIP);
     $svStats = "";
     $svAddress = $cut[0];
@@ -76,53 +79,49 @@ function sourceQuery($serverIP)
     // ord(string $string);
     $result = str_split($result);
     $info['network'] = ord($result[0]);
-    $char = 1;
+    $i = 1;
 
     // TODO: Make this into array and to a foreach loop
-    while(ord($result[$char]) != "%00") {
-        $info['name'] .= $result[$char];
-        $char++;
-    }
-    $char++;
+    while(ord($result[$i]) != "%00") {
+        $info['name'] .= $result[$i];
+        $i++;
+    } $i++;
 
-    while(ord($result[$char]) != "%00") {
-        $info['map'] .= $result[$char];
-        $char++;
-    }
-    $char++;
+    while(ord($result[$i]) != "%00") {
+        $info['map'] .= $result[$i];
+        $i++;
+    } $i++;
 
-    while(ord($result[$char]) != "%00") {
-        $info['dir'] .= $result[$char];
-        $char++;
-    }
-    $char++;
+    while(ord($result[$i]) != "%00") {
+        $info['dir'] .= $result[$i];
+        $i++;
+    } $i++;
 
-    while(ord($result[$char]) != "%00") {
-        $info['description'] .= $result[$char];
-        $char++;
-    }
-    $char++;
+    while(ord($result[$i]) != "%00") {
+        $info['description'] .= $result[$i];
+        $i++;
+    } $i++;
 
-    $info['appid'] = ord($result[$char] . $result[($char + 1)]);
-    $char += 2;
-    $info['players'] = ord($result[$char]);
-    $char++;
-    $info['max'] = ord($result[$char]);
-    $char++;
-    $info['bots'] = ord($result[$char]);
-    $char++;
-    $info['dedicated'] = ord($result[$char]);
-    $char++;
-    $info['os'] = chr(ord($result[$char]));
-    $char++;
-    $info['password'] = ord($result[$char]);
-    $char++;
-    $info['secure'] = ord($result[$char]);
-    $char++;
+    $info['appid'] = ord($result[$i] . $result[($i + 1)]);
+    $i += 2;
+    $info['players'] = ord($result[$i]);
+    $i++;
+    $info['max'] = ord($result[$i]);
+    $i++;
+    $info['bots'] = ord($result[$i]);
+    $i++;
+    $info['dedicated'] = ord($result[$i]);
+    $i++;
+    $info['os'] = chr(ord($result[$i]));
+    $i++;
+    $info['password'] = ord($result[$i]);
+    $i++;
+    $info['secure'] = ord($result[$i]);
+    $i++;
 
-    while(ord($result[$char]) != "%00") {
-        $info['version'] .= $result[$char];
-        $char++;
+    while(ord($result[$i]) != "%00") {
+        $info['version'] .= $result[$i];
+        $i++;
     }
 
     return $info;
@@ -137,7 +136,7 @@ $query = sourceQuery($serverIP);
     echo "name: ".$q['name']."<br/>";
     echo "map: ".$q['map']."<br/>";
     echo "dir: ".$q['dir']."<br/>";
-    echo "desc: ".$q['description']."<br/>";
+    echo "description: ".$q['description']."<br/>";
     echo "id: ".$q['appid']."<br/>";
     echo "players: ".$q['players']."<br/>";
     echo "max: ".$q['max']."<br/>";
