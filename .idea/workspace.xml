@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3f87fa9f-d107-4d64-97ef-2d63b88a2d48" name="Default" comment="- started working on /display/code/half-life.php">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/display/code/cstrike.php" afterPath="$PROJECT_DIR$/display/code/cstrike.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/display/code/half-life.php" afterPath="$PROJECT_DIR$/display/code/half-life.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="3f87fa9f-d107-4d64-97ef-2d63b88a2d48" name="Default" comment="- started working on /display/code/half-life.php" />
     <ignored path="GameServerWatcher.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -65,8 +61,8 @@
       <file leaf-file-name="cstrike.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/display/code/cstrike.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.1231803">
-              <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
+            <state vertical-scroll-proportion="0.30459127">
+              <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
               <folding>
                 <element signature="e#6#308#0#PHP" expanded="true" />
               </folding>
@@ -500,8 +496,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/display/code/cstrike.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1231803">
-          <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
+        <state vertical-scroll-proportion="0.30459127">
+          <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
           <folding>
             <element signature="e#6#308#0#PHP" expanded="true" />
           </folding>
