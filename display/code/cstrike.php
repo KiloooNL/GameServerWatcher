@@ -43,7 +43,10 @@ function sourceQuery($serverIP)
 
     /* TODO: In the original code, we used $serverIP like: $serverIP = 127.0.0.1:27015;
        however, this isn't really needed and we can just make 2 vars, $serverIP and $serverPort.
-       This code just exists from the original code and should be removed on revision. */
+       This code just exists from the original code and should be removed on revision. 
+       
+       So, change function sourceQuery($serverIP) to sourceQuery($serverIP, $serverPort);
+       */
     $cut = explode(":", $serverIP);
     $svStats = "";
     $svAddress = $cut[0];
@@ -52,7 +55,7 @@ function sourceQuery($serverIP)
     $svSocket = fsockopen("udp://" . $svAddress, $svPort, $errno, $errstr, 3);
     fwrite($svSocket, $svCommand);
 
-    $junkHead = fread($svSocket, 4);
+    // $junkHead = fread($svSocket, 4);
     $checkStatus = socket_get_status($svSocket);
 
     if($checkStatus["unread_bytes"] == 0) {
@@ -102,22 +105,14 @@ function sourceQuery($serverIP)
         $i++;
     } $i++;
 
-    $info['appid'] = ord($result[$i] . $result[($i + 1)]);
-    $i += 2;
-    $info['players'] = ord($result[$i]);
-    $i++;
-    $info['max'] = ord($result[$i]);
-    $i++;
-    $info['bots'] = ord($result[$i]);
-    $i++;
-    $info['dedicated'] = ord($result[$i]);
-    $i++;
-    $info['os'] = chr(ord($result[$i]));
-    $i++;
-    $info['password'] = ord($result[$i]);
-    $i++;
-    $info['secure'] = ord($result[$i]);
-    $i++;
+    $info['appid']      = ord($result[$i] . $result[($i + 1)]); $i += 2;
+    $info['players']    = ord($result[$i]); $i++;
+    $info['max']        = ord($result[$i]); $i++;
+    $info['bots']       = ord($result[$i]); $i++;
+    $info['dedicated']  = ord($result[$i]); $i++;
+    $info['os']         = chr(ord($result[$i])); $i++;
+    $info['password']   = ord($result[$i]); $i++;
+    $info['secure']     = ord($result[$i]); $i++;
 
     while(ord($result[$i]) != "%00") {
         $info['version'] .= $result[$i];
@@ -132,23 +127,22 @@ $query = sourceQuery($serverIP);
 /** Don't need to display this info.
  * This is for debugging purposes.
  *
-    echo "network: ".$q['network']."<br/>";
-    echo "name: ".$q['name']."<br/>";
-    echo "map: ".$q['map']."<br/>";
-    echo "dir: ".$q['dir']."<br/>";
-    echo "description: ".$q['description']."<br/>";
-    echo "id: ".$q['appid']."<br/>";
-    echo "players: ".$q['players']."<br/>";
-    echo "max: ".$q['max']."<br/>";
-    echo "bots: ".$q['bots']."<br/>";
-    echo "dedicated: ".$q['dedicated']."<br/>";
-    echo "os: ".$q['os']."<br/>";
-    echo "password: ".$q['password']."<br/>";
-    echo "secure: ".$q['secure']."<br/>";
-    echo "version: ".$q['version']."<br/>";
+    echo "network: "        .$query['network']      ."<br/>";
+    echo "name: "           .$query['name']         ."<br/>";
+    echo "map: "            .$query['map']          ."<br/>";
+    echo "dir: "            .$query['dir']          ."<br/>";
+    echo "description: "    .$query['description']  ."<br/>";
+    echo "id: "             .$query['appid']        ."<br/>";
+    echo "players: "        .$query['players']      ."<br/>";
+    echo "max: "            .$query['max']          ."<br/>";
+    echo "bots: "           .$query['bots']         ."<br/>";
+    echo "dedicated: "      .$query['dedicated']    ."<br/>";
+    echo "os: "             .$query['os']           ."<br/>";
+    echo "password: "       .$query['password']     ."<br/>";
+    echo "secure: "         .$query['secure']       ."<br/>";
+    echo "version: "        .$query['version']      ."<br/>";
  *
  */
-
 $svStatus = $query['network'];
 
 if(!$svStatus) {
