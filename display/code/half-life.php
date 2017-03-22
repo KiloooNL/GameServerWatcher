@@ -355,8 +355,6 @@ class serverStatus {
     }
 
     function _sockState() {
-
-
         if(!$this->_socket) {
             return 8;
         }
