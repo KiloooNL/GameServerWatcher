@@ -47,7 +47,7 @@ define("CONFIG_DIR","/config");
 /************************
  * Page load time diagnostic function
  * not used right now, but implemented for future use
- * 
+ *
  */
 function pageLoadTime() {
     $time = microtime();

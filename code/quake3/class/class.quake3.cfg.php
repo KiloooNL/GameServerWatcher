@@ -15,7 +15,7 @@
  * For a full list of supported servers, see this file
  */
 
-$cfg_type = array(
+$quake3_games = array(
   'aa'        =>  'America\'s Army: Operations/1717/spy',
   'avp2'      =>  'Alien vs Predator 2/27888/spy',
   'bf1942'    =>  'Battlefield 1942/23000/spy/spy1',
@@ -88,7 +88,7 @@ $cfg_type = array(
   'vc'        =>  'Vietcong/15425/spy'
 );
 
-$cfg_string = array(
+$quake3_string = array(
   'breed'     =>  "\xfe\xfd\x00\x3b\x95\xab\x00\x05\x01\x05\x06\x08\x0a\x00\x00",
   'fc'        =>  "\x7f\xff\xff\xffrules/\x7f\xff\xff\xffstatus/\x7f\xff\xff\xffplayers",
   'fl'        =>  "\x00\x02\xf1\x26\x01\x26\xf0\x90\xa6\xf0\x26\x57\x4e\xac\xa0\xec\xf8\x68\xe4\x8d\x21",
