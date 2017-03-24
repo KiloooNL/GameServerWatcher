@@ -13,10 +13,7 @@
  * TODO: This needs to be globalized and require_once'd in all PHP scripts, or by config.php
  *
  */
- 
- // Enable debugging / error logging?
- define('DEBUB_ENABLED', 0);
- define('ERROR_LOGGING_ENABLED', 1);
+
  require_once("../../config/config.php");
  
  // Error codes

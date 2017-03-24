@@ -37,9 +37,15 @@ require_once("../../rootDir.php");
 define("STATS_DIR", "/stats/");
 define("CONFIG_DIR","/config");
 
-
-// Error logging
+########################################
+# Error logging & debugging info
+#   : DEBUG_ENABLED: Enables debugging. 0 = Off, 1 = On
+#   : ERROR_LOGGING_ENABLED: Enables error logging. 0 = Off, 1 = On
+########################################
 require_once(ROOT_DIR . "/code/error.php");
+
+define('DEBUB_ENABLED', 1);
+define('ERROR_LOGGING_ENABLED', 1);
 
 /************************************************
  *  WARNING!
@@ -47,7 +53,6 @@ require_once(ROOT_DIR . "/code/error.php");
  * DO NOT EDIT CODE BELOW THIS LINE
  * UNLESS YOU KNOW WHAT YOU'RE DOING
  ***********************************************/
-
 
 /************************
  * Page load time diagnostic function
@@ -73,6 +78,4 @@ define('INC_POSTFIX', '.php');                  // Postfix for .inc files
 define('SOCK_TIMEOUT', '10');                   // Socket timeout in ms - TODO: Make this a global config var for ALL game server queries
 
 require_once(Q3_ROOT . "class/class.aux.php");
-
-
 ?>
