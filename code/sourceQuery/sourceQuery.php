@@ -13,7 +13,7 @@
  */
 
 // Server IP / Port
-$serverIP = "127.0.0.1";
+$serverIP = "192.168.1.147";
 $serverPort = 27015;
 
 require_once("../../config/config.php");
@@ -44,10 +44,10 @@ function sourceQuery($serverIP, $serverPort)
     $result = "";
     $svStats = "";
     $svCommand = "\377\377\377\377TSource Engine Query\0";
-    $svSocket = fsockopen("udp://" . $serverIP, $serverPort, $errno, $errstr, 3) or die(error("Unable to connect to " . $serverIP . ":" . $serverPort . "\n", -1));
+    $svSocket = fsockopen("udp://" . $serverIP, $serverPort, $errno, $errstr, 3); //  or die(error("Unable to connect to " . $serverIP . ":" . $serverPort . "\n", -1));
     fwrite($svSocket, $svCommand);
 
-    // $junkHead = fread($svSocket, 4);
+    $junkHead = fread($svSocket, 4);
     $checkStatus = socket_get_status($svSocket);
 
     if($checkStatus["unread_bytes"] == 0) {
@@ -118,22 +118,22 @@ $query = sourceQuery($serverIP, $serverPort);
 
 /** Don't need to display this info.
  * This is for debugging purposes.
- *
-    echo "network: "        .$query['network']      ."<br/>";
-    echo "name: "           .$query['name']         ."<br/>";
-    echo "map: "            .$query['map']          ."<br/>";
-    echo "dir: "            .$query['dir']          ."<br/>";
-    echo "description: "    .$query['description']  ."<br/>";
-    echo "id: "             .$query['appid']        ."<br/>";
-    echo "players: "        .$query['players']      ."<br/>";
-    echo "max: "            .$query['max']          ."<br/>";
-    echo "bots: "           .$query['bots']         ."<br/>";
-    echo "dedicated: "      .$query['dedicated']    ."<br/>";
-    echo "os: "             .$query['os']           ."<br/>";
-    echo "password: "       .$query['password']     ."<br/>";
-    echo "secure: "         .$query['secure']       ."<br/>";
-    echo "version: "        .$query['version']      ."<br/>";
- *
+ */
+    echo "network: "        .$query['network']      ."<br/>"; // Region
+    echo "name: "           .$query['name']         ."<br/>"; // Host name
+    echo "map: "            .$query['map']          ."<br/>"; // Current map
+    echo "dir: "            .$query['dir']          ."<br/>"; // Game type
+    echo "description: "    .$query['description']  ."<br/>"; // Game type description
+    echo "id: "             .$query['appid']        ."<br/>"; // App ID
+    echo "players: "        .$query['players']      ."<br/>"; // Current Players
+    echo "max: "            .$query['max']          ."<br/>"; // Max Players
+    echo "bots: "           .$query['bots']         ."<br/>"; // Number of bots
+    echo "dedicated: "      .$query['dedicated']    ."<br/>"; // Dedicated server?
+    echo "os: "             .$query['os']           ."<br/>"; // Host OS (w = win)
+    echo "password: "       .$query['password']     ."<br/>"; // Password enabled (0/1)
+    echo "secure: "         .$query['secure']       ."<br/>"; // VAC Secured? (0/1)
+    echo "version: "        .$query['version']      ."<br/>"; // Server version
+ /*
  */
 $svStatus = $query['network'];
 
