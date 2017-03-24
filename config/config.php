@@ -33,8 +33,13 @@ define("DB_PASS", "password");
 #   STATS_DIR: the directory you will want to display server statistics
 #   CONFIG_DIR: the directory for this file.
 ########################################
+require_once("../../rootDir.php");
 define("STATS_DIR", "/stats/");
 define("CONFIG_DIR","/config");
+
+
+// Error logging
+require_once(ROOT_DIR . "/code/error.php");
 
 /************************************************
  *  WARNING!
@@ -61,7 +66,7 @@ function pageLoadTime() {
 # Quake 3 Servers Config - TODO: clean this up
 #
 ###################################
-define('Q3_ROOT', "../../code/quake3/");           // Quake 3 scripts root folder
+define('Q3_ROOT', ROOT_DIR . "/code/quake/");           // Quake 3 scripts root folder
 define('Q3_INC_PATH', Q3_ROOT . "inc/");   // Path to inc. files
 define('INC_PREFIX', 'inc');                    // Prefix for .inc files
 define('INC_POSTFIX', '.php');                  // Postfix for .inc files

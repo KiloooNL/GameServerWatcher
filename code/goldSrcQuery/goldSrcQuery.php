@@ -6,7 +6,7 @@
  *
  * GitHub repo: https://github.com/KiloooNL/GameServerWatcher
  *
- * half-life.php
+ * goldSrcQuery.php
  *
  * This PHP file is a script for scraping Half-Life (Valve) server information in real time.
  *
@@ -26,18 +26,7 @@ $serverPort = 27016;    // SRCDS Default Port is: 27015.
 // This will later on return server status. "Online"/"Offline" ..
 $serverStatus;
 
-// Let's begin.
-define("ERROR_NOERROR", 0);
-define("ERROR_NOSERVER", -1);
-define("ERROR_INSOCKET", -2);
-
-// Debugging:
-define("DEBUG", 0);
-function debug($string) {
-    if(defined('DEBUG')) {
-        echo "<!-- [DEBUG]: " . $string . " -->\n";
-    }
-}
+require_once("../../config/config.php");
 
 /******
  * microtime_float()
@@ -68,7 +57,7 @@ function getFloat32($fourchars) {
     }
 }
 
-class serverStatus {
+class goldSrcQuery {
     // Initialize variables
     var $_arr = array();
     var $_ip = "";
@@ -472,7 +461,7 @@ class serverStatus {
  * Start displaying the server information
  */
 
-$gameServer = new serverStatus($serverIP, $serverPort);
+$gameServer = new goldSrcQuery($serverIP, $serverPort);
 $gameServer->getDetails();
 $gameServer->getPlayers();
 
