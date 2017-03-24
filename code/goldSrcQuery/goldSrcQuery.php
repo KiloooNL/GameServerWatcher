@@ -20,14 +20,18 @@
  *
  */
 
-$serverIP = "192.168.1.147";
-$serverPort = 27017;    // SRCDS Default Port is: 27015.
+$serverIP = "127.0.0.1";
+$serverPort = 27015;    // SRCDS Default Port is: 27015.
 
-//$fp = fsockopen($serverIP,$serverPort, $errstr, $errno, 2);
-//stream_set_timeout($fp, 5);
+// TODO: Maybe remove this later and add if(is_resource) to the goldSrcQuery class
+$fp = fsockopen("udp://".$serverIP, $serverPort, $errstr, $errno, 5);
 
-// This will later on return server status. "Online"/"Offline" ..
-$serverStatus = "";
+if(is_resource($fp)) {
+    stream_set_timeout($fp, 5);
+    $serverStatus = "Online";
+} else {
+    $serverStatus = "Offline";
+}
 
 require_once("../../config/config.php");
 
@@ -41,10 +45,10 @@ function microtime_float() {
     echo $sec;
 }
 
-function getFloat32($fourchars) {
+function getFloat32($chars) {
     $bin = '';
     for($i = 0; $i <=3; $i++) {
-        $bin = str_pad(decbin(ord(substr($fourchars, $i, 1))), 8, '0', STR_PAD_LEFT).$bin;
+        $bin = str_pad(decbin(ord(substr($chars, $i, 1))), 8, '0', STR_PAD_LEFT).$bin;
     }
 
     $exponent = bindec(substr($bin, 1, 8));
@@ -67,13 +71,13 @@ class goldSrcQuery {
     var $_port = 0;
     var $_isconnected = 0;
     var $_players = array();
-    var $_rules = array();  // TODO: we may not need this, but init it for now.
+    var $_rules = array();
     var $_errorcode = ERROR_NOERROR;
     var $_seed = "Server status for server (%s:%d)";
     var $_socket;
 
     // Constructor
-    function serverStatus($serverIP, $serverPort) {
+    function goldSrcQuery($serverIP, $serverPort) {
         $this->_ip = $serverIP;
         $this->_port = $serverPort;
         $this->_seed = "\x0a\x3c\x21\x2d\x2d\x20\x20\x20\x20\x20\x20\x20\x53\x65\x72\x76\x65\x72\x20\x6d\x61\x64\x51\x75\x65\x72\x79\x20\x43"
@@ -122,14 +126,14 @@ class goldSrcQuery {
                 $tmp = $this->_getMore();
             }
 
-            if(strlen($tmp) >=4 && substr($tmp, 4, 1) == 'j') {
+            if(strlen($tmp) >= 4 && substr($tmp, 4, 1) == 'j') {
                 $end = microtime_float()*1000;
                 if($end < $start) {
                     echo $end . '\n' . $start;
                     return ($end - $start); // ($end - $start >= 0 ? ($end - $start) : -1; // Will be numeric ping
                 } else {
                     $this->setError(ERROR_NOSERVER);
-                    debug("[Error: No ping from the server]");
+                    debug("[Error: No response from the server]");
                     return -1; // Server unresponsive
                 }
             }
@@ -167,12 +171,12 @@ class goldSrcQuery {
                     $this->_arr[$count++] = $text;
                     $text = "";
                 } else {
-                    $text.=$tmp;
+                    $text .= $tmp;
                 }
             } while($count < 5);
 
             for($i = 0; $i <= 6; $i++, $count++) {
-                $tmp=substr($buffer, 0, 1);
+                $tmp = substr($buffer, 0, 1);
                 $buffer = substr($buffer, 1);
                 if($count == 8 || $count == 9) {
                     $this->_arr[$count] = $tmp;
@@ -268,7 +272,7 @@ class goldSrcQuery {
                 $tname = "";
 
                 do {
-                    $tmp = substr($buffer, 1);
+                    $tmp = substr($buffer, 0, 1);
                     $buffer = substr($buffer, 1);
                     if(ord($tmp !=0)) {
                         $tname .= $tmp;
@@ -276,6 +280,17 @@ class goldSrcQuery {
                 } while(ord($tmp != 0));
 
                 $tfrags = substr($buffer, 0, 4);
+                $buffer = substr($buffer, 4);
+
+                for($j = 0; $j < 4; $j++) {
+                    $rfrags += (pow(256, $j) * ord(substr($tfrags, $j, 1)));
+                }
+
+                if($rfrags > 2147483648) {
+                    $rfrags -= 4294967296;
+                }
+
+                $tmp = substr($buffer, 0, 4);
                 $buffer = substr($buffer, 4);
                 $rtime = getFloat32($tmp);
                 $arr[$i] = array("Index" => $tind, "Name" => $tname, "Frags" => $rfrags, "Time" => $rtime);
@@ -354,28 +369,44 @@ class goldSrcQuery {
         $status = socket_get_status($this->_socket);
         $ret = 0;
 
-        // TODO: change this to a switch method
-
+        switch($status) {
+            case 'timed out':
+                debug("Socket timed out.<br>\n");
+                $ret |= 1;
+                break;
+            case 'eof':
+                debug("Error: Socket was closed by the remote host.<br>\n");
+                $ret |= 2;
+                break;
+            case 'blocked':
+                break;
+            default:
+                break;
+        }
+        return $ret;
+        /** DEPRECATED VERSION - TODO: test the switch method before destroying the below code
         if($status["timed out"]) {
-            echo "Error: Socket timed out.<br>\n";
+            debug("Socket timed out.<br>\n");
             $ret |= 1;
         }
         if($status["eof"]) {
-            echo "Error: Socket was closed by the remote host.<br>\n";
+            debug("Error: Socket was closed by the remote host.<br>\n");
             $ret |= 2;
         }
         if($status["blocked"]) {
-            echo "Error: Port blocked.<br>\n";
-            //exit;
-            $ret |= 4;
+            // Enable these at your own risk! Doing so will cause a 'BLOCKED' response
+            // debug("Error: Port blocked.<br>\n");
+            // exit;
+            // $ret |= 4;
 
         }
         return $ret;
-        //return (!$stat["timed_out"] && !$stat["eof"] && !(!$this->_socket));
+        //return (!$status["timed_out"] && !$status["eof"] && !(!$this->_socket));  */
     }
 
-    function _send($outstr) {
-        if(!$this->_sockState()) {
+    function _send($outstr)
+    {
+        if (!$this->_sockState()) {
             fwrite($this->_socket, $outstr, strlen($outstr));
         } else {
             return "\0";
@@ -399,13 +430,13 @@ class goldSrcQuery {
     }
 
     function _brandSeed() {
+        print($this->_seed);
         $this->_seed="\x0a\x3c\x21\x2d\x2d\x20\x20\x20\x20\x20\x20\x20\x53\x65\x72\x76\x65\x72\x20\x6d\x61\x64\x51\x75\x65\x72\x79\x20\x43"
             ."\x6c\x61\x73\x73\x20\x20\x20\x20\x20\x20\x20\x2d\x2d\x3e\x0a\x3c\x21\x2d\x2d\x20\x20\x20\x20\x43\x6f\x70\x79\x72\x69"
             ."\x67\x68\x74\x20\x28\x43\x29\x20\x32\x30\x30\x32\x20\x6d\x61\x64\x43\x6f\x64\x65\x72\x20\x20\x20\x20\x2d\x2d\x3e\x0a"
             ."\x3c\x21\x2d\x2d\x20\x20\x20\x6d\x61\x64\x63\x6f\x64\x65\x72\x40\x73\x74\x75\x64\x65\x6e\x74\x2e\x75\x74\x64\x61\x6c"
             ."\x6c\x61\x73\x2e\x65\x64\x75\x20\x20\x20\x2d\x2d\x3e\x0a\x3c\x21\x2d\x2d\x20\x68\x74\x74\x70\x3a\x2f\x2f\x77\x77\x77"
             ."\x2e\x75\x74\x64\x61\x6c\x6c\x61\x73\x2e\x65\x64\x75\x2f\x7e\x6d\x61\x64\x63\x6f\x64\x65\x72\x20\x2d\x2d\x3e\x0a\x0a";
-
         // print($this->_seed);
     }
 
@@ -475,35 +506,35 @@ $gameServer = new goldSrcQuery($serverIP, $serverPort);
 $gameServer->getDetails();
 $gameServer->getPlayers();
 
-$svAddress   = $gameServer->Address();
-$svHostName  = $gameServer->Hostname();
-$svMap       = $gameServer->Map();
-$svModName   = $gameServer->ModName();
-$svActive    = $gameServer->Active();
-$svMax       = $gameServer->Max();
-$svProtocol  = $gameServer->Protocol();
-$svSvrType   = $gameServer->SvrType();
-$svSvrOS     = $gameServer->SvrOS();
-$svPass      = $gameServer->Pass();
-$svIsMod     = $gameServer->IsMod();
-$svModHTTP   = $gameServer->ModHTTP();
-$svModFTP    = $gameServer->ModFTP();
-$svSvrVer    = $gameServer->SvrVer();
-$svSvrSize   = $gameServer->SvrSize();
-$svSvrOnly   = $gameServer->SvrOnly();
-$svCustom    = $gameServer->Custom();
 
-if($gameServer->isUp() == 0 || 1 || -1) {
-    $serverStatus = "Offline";
-} else {
-    $serverStatus = "Online";
-}
+$svAddress    = $gameServer->Address();
+$svHostName   = $gameServer->Hostname();
+$svMap        = $gameServer->Map();
+$svModName    = $gameServer->ModName();
+$svDesc       = $gameServer->Desc();
+$svActive     = $gameServer->Active();
+$svMax        = $gameServer->Max();
+$svProtocol   = $gameServer->Protocol();
+$svSvrType    = $gameServer->SvrType();
+$svSvrOS      = $gameServer->SvrOS();
+$svPass       = $gameServer->Pass();
+$svIsMod      = $gameServer->IsMod();
+$svModHTTP    = $gameServer->ModHTTP();
+$svModFTP     = $gameServer->ModFTP();
+$svNotUsed    = $gameServer->NotUsed();
+$svSvrVer     = $gameServer->SvrVer();
+$svSvrSize    = $gameServer->SvrSize();
+$svSvrOnly    = $gameServer->SvrOnly();
+$svCustom     = $gameServer->Custom();
+$svSecure     = $gameServer->VACSec();
+$svPing       = $gameServer->Ping();
+$svPlayerData = $gameServer->Players();
+$svRules      = $gameServer->Rules();
 
 /** Don't need to display this info.
  * This is for debugging purposes.
-*/
-
-print_r($gameServer->_arr);
+ * TODO: ADD ALL FUNCTIONS ABOVE, BELOW.
+ *
 
 echo "status: "         .$serverStatus ."<br/>"; // Server status (Online/Offline)
 echo "name: "           .$svHostName   ."<br/>"; // Host name
@@ -515,8 +546,8 @@ echo "os: "             .$svSvrOS      ."<br/>"; // Host OS (w = win)
 echo "password: "       .$svPass       ."<br/>"; // Password enabled (0/1)
 echo "secure: "         .$svCustom     ."<br/>"; // VAC secured? (0/1)
 echo "version: "        .$svSvrVer     ."<br/>"; // Server version
-/*
 */
+
 
 ?>
 
