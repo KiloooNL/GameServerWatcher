@@ -14,11 +14,13 @@
 
 // Server IP / Port
 $serverIP = "127.0.0.1";
-$serverPort = "27015";
+$serverPort = 27015;
 
-function sourceQuery($serverIP)
+require_once("../../config/config.php");
+
+function sourceQuery($serverIP, $serverPort)
 {
-    /** TODO: Change variables in this file to reflect the same variables in half-life.php
+    /** TODO: Change variables in this file to reflect the same variables in goldSrcQuery.php
      *        this will make moving between PHP files easier, and make code base neater and more understandable.
      * // Initialize variables
      * var $_arr = array();
@@ -26,7 +28,7 @@ function sourceQuery($serverIP)
      * var $_port = 0;
      * var $_isconnected = 0;
      * var $_players = array();
-     * var $_rules = array();  // TODO: we may not need this, but init it for now.
+     * var $_rules = array();
      * var $_errorcode = ERROR_NOERROR;
      * var $_seed = "Server status for server (%s:%d)";
      * var $_socket;
@@ -40,19 +42,9 @@ function sourceQuery($serverIP)
         "version"     => "",);
 
     $result = "";
-
-    /* TODO: In the original code, we used $serverIP like: $serverIP = 127.0.0.1:27015;
-       however, this isn't really needed and we can just make 2 vars, $serverIP and $serverPort.
-       This code just exists from the original code and should be removed on revision. 
-       
-       So, change function sourceQuery($serverIP) to sourceQuery($serverIP, $serverPort);
-       */
-    $cut = explode(":", $serverIP);
     $svStats = "";
-    $svAddress = $cut[0];
-    $svPort = $cut[1];
     $svCommand = "\377\377\377\377TSource Engine Query\0";
-    $svSocket = fsockopen("udp://" . $svAddress, $svPort, $errno, $errstr, 3);
+    $svSocket = fsockopen("udp://" . $serverIP, $serverPort, $errno, $errstr, 3) or die(error("Unable to connect to " . $serverIP . ":" . $serverPort . "\n", -1));
     fwrite($svSocket, $svCommand);
 
     // $junkHead = fread($svSocket, 4);
@@ -122,7 +114,7 @@ function sourceQuery($serverIP)
     return $info;
 }
 
-$query = sourceQuery($serverIP);
+$query = sourceQuery($serverIP, $serverPort);
 
 /** Don't need to display this info.
  * This is for debugging purposes.
