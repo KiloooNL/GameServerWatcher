@@ -44,7 +44,7 @@ define("CONFIG_DIR","/config");
 ########################################
 require_once(ROOT_DIR . "/code/error.php");
 
-define('DEBUB_ENABLED', 1);
+define('DEBUB_ENABLED', 0);
 define('ERROR_LOGGING_ENABLED', 1);
 
 /************************************************
