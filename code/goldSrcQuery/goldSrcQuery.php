@@ -23,8 +23,8 @@
 $serverIP = "192.168.1.147";
 $serverPort = 27017;    // SRCDS Default Port is: 27015.
 
-$fp = fsockopen($serverIP,$serverPort, $errstr, $errno, 2);
-stream_set_timeout($fp, 5);
+//$fp = fsockopen($serverIP,$serverPort, $errstr, $errno, 2);
+//stream_set_timeout($fp, 5);
 
 // This will later on return server status. "Online"/"Offline" ..
 $serverStatus = "";
@@ -444,6 +444,7 @@ class goldSrcQuery {
     function Hostname (){ return $this->_arr[ 1]; }     // Hostname / Port
     function Map      (){ return $this->_arr[ 2]; }     // Current map
     function ModName  (){ return $this->_arr[ 3]; }     // Server mod
+    function Desc     (){ return $this->_arr[ 4]; }     // Server description
     function Active   (){ return $this->_arr[ 5]; }     // Current players
     function Max      (){ return $this->_arr[ 6]; }     // Max players
 
@@ -455,10 +456,15 @@ class goldSrcQuery {
     function IsMod   (){ return $this->_arr[11]; }      // Server is running mod?
     function ModHTTP (){ return $this->_arr[12]; }      // Mod website
     function ModFTP  (){ return $this->_arr[13]; }      // Mod FTP
+    function NotUsed (){ return $this->_arr[14]; }      // Not used
     function SvrVer  (){ return $this->_arr[15]; }      // Server version
     function SvrSize (){ return $this->_arr[16]; }      // Server size
     function SvrOnly (){ return $this->_arr[17]; }      // Server only
-    function Custom  (){ return $this->_arr[18]; }      // Is server VAC secure?
+    function Custom  (){ return $this->_arr[18]; }      //
+    function VACSec  (){ return $this->_arr[19]; }      // VAC Secure?
+    function Ping    (){ return $this->_arr[20]; }      // Server ping
+    function Players (){ return $this->_players; }      // Player data
+    function Rules   (){ return $this->_rules;   }      // Rules
 }
 
 /**
