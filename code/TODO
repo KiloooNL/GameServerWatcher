@@ -6,4 +6,4 @@ TODO:
   - half-life should be renamed to goldSrcQuery.php (or valve.php)
   - quake3 should be renamed to quake.php
 
-  This is so these classes/protocools represent the game engine used for each server type, and there will be no confusion between files.
+  This is so these classes/protocols represent the game engine used for each server type, and there will be no confusion between files.
