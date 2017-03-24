@@ -125,13 +125,13 @@ $query = sourceQuery($serverIP, $serverPort);
     echo "dir: "            .$query['dir']          ."<br/>"; // Game type
     echo "description: "    .$query['description']  ."<br/>"; // Game type description
     echo "id: "             .$query['appid']        ."<br/>"; // App ID
-    echo "players: "        .$query['players']      ."<br/>"; // Current Players
-    echo "max: "            .$query['max']          ."<br/>"; // Max Players
+    echo "players: "        .$query['players']      ."<br/>"; // Current players
+    echo "max: "            .$query['max']          ."<br/>"; // Max players
     echo "bots: "           .$query['bots']         ."<br/>"; // Number of bots
     echo "dedicated: "      .$query['dedicated']    ."<br/>"; // Dedicated server?
     echo "os: "             .$query['os']           ."<br/>"; // Host OS (w = win)
     echo "password: "       .$query['password']     ."<br/>"; // Password enabled (0/1)
-    echo "secure: "         .$query['secure']       ."<br/>"; // VAC Secured? (0/1)
+    echo "secure: "         .$query['secure']       ."<br/>"; // VAC secured? (0/1)
     echo "version: "        .$query['version']      ."<br/>"; // Server version
  /*
  */
