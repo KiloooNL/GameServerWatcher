@@ -20,11 +20,14 @@
  *
  */
 
-$serverIP = "127.0.0.1";
-$serverPort = 27016;    // SRCDS Default Port is: 27015.
+$serverIP = "192.168.1.147";
+$serverPort = 27017;    // SRCDS Default Port is: 27015.
+
+$fp = fsockopen($serverIP,$serverPort, $errstr, $errno, 2);
+stream_set_timeout($fp, 5);
 
 // This will later on return server status. "Online"/"Offline" ..
-$serverStatus;
+$serverStatus = "";
 
 require_once("../../config/config.php");
 
@@ -45,7 +48,7 @@ function getFloat32($fourchars) {
     }
 
     $exponent = bindec(substr($bin, 1, 8));
-    $exponent = ($exponent)? $exponent - 127 : $exponent;
+    $exponent = ($exponent) ? $exponent - 127 : $exponent;
 
     if($exponent) {
         $float = bindec('1'.substr($bin, 9, $exponent));
@@ -113,7 +116,7 @@ class goldSrcQuery {
         } else {
             $tmp = "";
             $start = microtime_float()*1000;
-            $this->_send("ping".chr(0)); // Todo: original code was $this->_send("ÿÿÿÿping".chr(0)); ... was this an encoding error? Check.
+            $this->_send("ÿÿÿÿping".chr(0));
 
             while(strlen($tmp) < 4 && (microtime_float()*1000 - $start) < 1000) {
                 $tmp = $this->_getMore();
@@ -142,7 +145,7 @@ class goldSrcQuery {
             $this->setError(ERROR_INSOCKET);
             return -1;
         } else {
-            $this->_send("details".chr(0)); // Todo: original code was $this->_send("ÿÿÿÿdetails".chr(0)); ... was this an encoding error? Check.
+            $this->_send("ÿÿÿÿdetails".chr(0));
             $buffer = $this->_getMore();
             /**
              *  echo $buffer;
@@ -158,7 +161,7 @@ class goldSrcQuery {
             $arr = array();
 
             do {
-                $tmp = substr($buffer, 0,1 );
+                $tmp = substr($buffer, 0, 1);
                 $buffer = substr($buffer, 1);
                 if(!ord($tmp)) {
                     $this->_arr[$count++] = $text;
@@ -168,7 +171,7 @@ class goldSrcQuery {
                 }
             } while($count < 5);
 
-            for($i = 0; $i < 6; $i++, $count++) {
+            for($i = 0; $i <= 6; $i++, $count++) {
                 $tmp=substr($buffer, 0, 1);
                 $buffer = substr($buffer, 1);
                 if($count == 8 || $count == 9) {
@@ -229,11 +232,12 @@ class goldSrcQuery {
                 $buffer = substr($buffer, 1);
             } else {
                 for($i = 0; $i < 8; $i++) {
-                    $this->_arr[$count] = round($this->_ping(), 1);
-                    return 0;
+                    $this->_arr[$count++] = "\0";
                 }
             }
         }
+        $this->_arr[$count] = round($this->_ping(), 1);
+        return 0;
     }
 
     // Sets players array
@@ -245,7 +249,7 @@ class goldSrcQuery {
             $this->setError(ERROR_INSOCKET);
             return -1;
         } else {
-            $this->_send("players".chr(0)); // Todo: original code was $this->_send("ÿÿÿÿplayers".chr(0)); ... was this an encoding error? Check.
+            $this->_send("ÿÿÿÿplayers".chr(0));
             $buffer = $this->_getMore();
             $buffer = substr($buffer, 5);
             $count = ord(substr($buffer, 0, 1)); // Number of active players
@@ -255,7 +259,7 @@ class goldSrcQuery {
             $ttime = 0;
             $arr = array();
 
-            for($i = 0; i < $count; $i++) {
+            for($i = 0; $i < $count; $i++) {
                 $rfrags = 0.0;
                 $rtime = 0;
                 $stime = 0;
@@ -284,13 +288,13 @@ class goldSrcQuery {
     function getRules() {
         debug("[Getting rules]");
         $multi = 0;
-        // $cvars = array();
+        $cvars = array(); // NOTE: Originally not used.
         if($tmp = $this->_sockState()) {
             $this->setError(ERROR_INSOCKET);
             return -1;
         }
 
-        $this->_send("rules".chr(0)); // Todo: original code was $this->_send("ÿÿÿÿrules".chr(0)); ... was this an encoding error? Check.
+        $this->_send("ÿÿÿÿrules".chr(0));
         $buffer = $this->_getMore();
 
         if(strlen($buffer) == 0) {
@@ -353,18 +357,18 @@ class goldSrcQuery {
         // TODO: change this to a switch method
 
         if($status["timed out"]) {
-            // echo "Error: socket timed out.<br>\n";
+            echo "Error: Socket timed out.<br>\n";
             $ret |= 1;
         }
         if($status["eof"]) {
-            // echo "Error: Socket was closed by the remote host.<br>\n";
+            echo "Error: Socket was closed by the remote host.<br>\n";
             $ret |= 2;
         }
         if($status["blocked"]) {
-            /* echo "Error: Port blocked.";
-             * exit;
-             * $ret |= 4;
-             */
+            echo "Error: Port blocked.<br>\n";
+            //exit;
+            $ret |= 4;
+
         }
         return $ret;
         //return (!$stat["timed_out"] && !$stat["eof"] && !(!$this->_socket));
@@ -483,29 +487,31 @@ $svSvrSize   = $gameServer->SvrSize();
 $svSvrOnly   = $gameServer->SvrOnly();
 $svCustom    = $gameServer->Custom();
 
-// Find the server's IP
-function getServerIP($string) {
-    $colpos = strrpos($string, ":");
-    $string = substr($string, 0, $colpos);
-    return $string;
-}
-
-// Find the server's port
-// Must pass IP ($svAddress) as the $string var
-function getServerPort($string) {
-    $string = substr(strrchr($string, ":"), 1); // originally : $string = substr(strrchr($string, ":", 1));
-    return $string;
-}
-
-$svAddress = getServerIP($svAddress);
-$svPort = getServerPort($svAddress);
-
-
 if($gameServer->isUp() == 0 || 1 || -1) {
     $serverStatus = "Offline";
 } else {
     $serverStatus = "Online";
 }
+
+/** Don't need to display this info.
+ * This is for debugging purposes.
+*/
+
+print_r($gameServer->_arr);
+
+echo "status: "         .$serverStatus ."<br/>"; // Server status (Online/Offline)
+echo "name: "           .$svHostName   ."<br/>"; // Host name
+echo "map: "            .$svMap        ."<br/>"; // Current map
+echo "dir: "            .$svSvrType    ."<br/>"; // Game type
+echo "players: "        .$svActive     ."<br/>"; // Current players
+echo "max: "            .$svMax        ."<br/>"; // Max players
+echo "os: "             .$svSvrOS      ."<br/>"; // Host OS (w = win)
+echo "password: "       .$svPass       ."<br/>"; // Password enabled (0/1)
+echo "secure: "         .$svCustom     ."<br/>"; // VAC secured? (0/1)
+echo "version: "        .$svSvrVer     ."<br/>"; // Server version
+/*
+*/
+
 ?>
 
 <img src="valve_img.php?svName=<?php echo $svHostName;?>&svAddress=<?php echo $svAddress; ?>&svPort=<?php echo $svPort; ?>&serverStatus=<?php echo $serverStatus; ?>&svActive=<?php echo $svActive;?>&svMax=<?php echo $svMax; ?>&sv_rank=1st&sv_map=<?php echo $svMap;?>" class="border" width="560" height="95" align="middle" />
