@@ -115,10 +115,18 @@ function sourceQuery($serverIP, $serverPort)
 }
 
 $query = sourceQuery($serverIP, $serverPort);
+$svStatus = $query['network'];
+
+if(!$svStatus) {
+    $svStatus = "Offline";
+} else {
+    $svStatus = "Online";
+}
 
 /** Don't need to display this info.
  * This is for debugging purposes.
  */
+    echo "status: "         .$svStatus              ."<br/>"; // Server status (Online/Offline)
     echo "network: "        .$query['network']      ."<br/>"; // Region
     echo "name: "           .$query['name']         ."<br/>"; // Host name
     echo "map: "            .$query['map']          ."<br/>"; // Current map
@@ -135,13 +143,7 @@ $query = sourceQuery($serverIP, $serverPort);
     echo "version: "        .$query['version']      ."<br/>"; // Server version
  /*
  */
-$svStatus = $query['network'];
 
-if(!$svStatus) {
-    $svStatus = "Offline";
-} else {
-    $svStatus = "Online";
-}
 
 $svRank = "1st"; // TODO: Scrape this information from gametracker.rs in the future for a true rank.
 ?>
