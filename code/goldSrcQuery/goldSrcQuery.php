@@ -508,4 +508,4 @@ if($gameServer->isUp() == 0 || 1 || -1) {
 }
 ?>
 
-<img src="valve_img.php?svName="<?php echo $svHostName;?>"&svAddress="<?php echo $svAddress; ?>"&svPort="<?php echo $svPort; ?>"&serverStatus=<?php echo $serverStatus; ?>&svActive=<?php echo $svActive;?>&svMax=<?php echo $svMax; ?>&sv_rank=1st&sv_map=<?php echo $svMap;?>" class="border" width="560" height="95" align="middle" />
+<img src="valve_img.php?svName=<?php echo $svHostName;?>&svAddress=<?php echo $svAddress; ?>&svPort=<?php echo $svPort; ?>&serverStatus=<?php echo $serverStatus; ?>&svActive=<?php echo $svActive;?>&svMax=<?php echo $svMax; ?>&sv_rank=1st&sv_map=<?php echo $svMap;?>" class="border" width="560" height="95" align="middle" />
