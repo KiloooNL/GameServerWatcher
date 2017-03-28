@@ -15,7 +15,7 @@
  * For a full list of supported servers, see /class/class.quake3.cfg.php
  */
 
-
+require_once("../../config.php");
 
 class serverStatus {
     var $quake3_games;      // contains the $quake3_games array from class.quake3.cfg.php
@@ -176,7 +176,7 @@ class serverStatus {
     // Parse data according to the game type
     function parseData($data) {
         // Include the parse file
-        $parse_file = INC_PATH.INC_PREFIX.$this->svQueryType.INC_POSTFIX;
+        $parse_file = Q3_INC_PATH.INC_PREFIX.$this->svQueryType.INC_POSTFIX;
         if(!is_readable(($parse_file))) {
             $this->error('could not read file "' . $parse_file . '".', 0);
         }
