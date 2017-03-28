@@ -14,7 +14,7 @@
  *
  */
 
- require_once("../../config/config.php");
+ require_once("../config/config.php");
  
  // Error codes
 define("ERROR_NOERROR", 0);

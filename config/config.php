@@ -33,7 +33,7 @@ define("DB_PASS", "password");
 #   STATS_DIR: the directory you will want to display server statistics
 #   CONFIG_DIR: the directory for this file.
 ########################################
-require_once("../../rootDir.php");
+require_once("../rootDir.php");
 define("STATS_DIR", "/stats/");
 define("CONFIG_DIR","/config");
 
