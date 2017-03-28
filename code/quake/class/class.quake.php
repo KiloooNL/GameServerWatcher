@@ -15,7 +15,7 @@
  * For a full list of supported servers, see /class/class.quake3.cfg.php
  */
 
-require_once("../../config.php");
+require_once("../../../config/config.php");
 
 class serverStatus {
     var $quake3_games;      // contains the $quake3_games array from class.quake3.cfg.php
@@ -125,7 +125,7 @@ class serverStatus {
         if(!isset($cfg_data[3])) {
             $this->svStrings = explode('/', $this->quake3_strings[$this->svQueryType]);
         } else {
-            $this->svStrings = explode('/', $this->quake3_strings[$cfg_data[3]);
+            $this->svStrings = explode('/', $this->quake3_strings[$cfg_data[3]]);
         }
         return true;
     }
@@ -141,7 +141,7 @@ class serverStatus {
         // Send strings to server, receive data
         $string_cnt = count($this->svStrings);
 
-        for($i = 0; $i != $string_cnt; i++) {
+        for($i = 0; $i != $string_cnt; $i++) {
             // Send string
             fwrite($sock, $this->svStrings[$i]);
 
