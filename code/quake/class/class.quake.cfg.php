@@ -1,4 +1,4 @@
-<?PHP
+<?php
 /**
  * GAMESERVERWATCHER
  * 	coded by Ben Weidenhofer
