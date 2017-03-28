@@ -17,3 +17,5 @@
 
 require_once("../../config/config.php");
 
+// Get all the scripts
+require_once(Q3_ROOT . "/class/class.quake.php");
