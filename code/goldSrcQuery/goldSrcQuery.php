@@ -478,34 +478,31 @@ class goldSrcQuery {
     function Desc     (){ return $this->_arr[ 4]; }     // Server description
     function Active   (){ return $this->_arr[ 5]; }     // Current players
     function Max      (){ return $this->_arr[ 6]; }     // Max players
-
-    /** Don't always need these, so don't call if not needed */
-    function Protocol(){ return $this->_arr[ 7]; }      // Protocol
-    function SvrType (){ return $this->_arr[ 8]; }      // Server Type
-    function SvrOS   (){ return $this->_arr[ 9]; }      // Server OS
-    function Pass    (){ return $this->_arr[10]; }      // Server Password
-    function IsMod   (){ return $this->_arr[11]; }      // Server is running mod?
-    function ModHTTP (){ return $this->_arr[12]; }      // Mod website
-    function ModFTP  (){ return $this->_arr[13]; }      // Mod FTP
-    function NotUsed (){ return $this->_arr[14]; }      // Not used
-    function SvrVer  (){ return $this->_arr[15]; }      // Server version
-    function SvrSize (){ return $this->_arr[16]; }      // Server size
-    function SvrOnly (){ return $this->_arr[17]; }      // Server only
-    function Custom  (){ return $this->_arr[18]; }      //
-    function VACSec  (){ return $this->_arr[19]; }      // VAC Secure?
-    function Ping    (){ return $this->_arr[20]; }      // Server ping
-    function Players (){ return $this->_players; }      // Player data
-    function Rules   (){ return $this->_rules;   }      // Rules
+    function Protocol (){ return $this->_arr[ 7]; }      // Protocol
+    function SvrType  (){ return $this->_arr[ 8]; }      // Server Type
+    function SvrOS    (){ return $this->_arr[ 9]; }      // Server OS
+    function Pass     (){ return $this->_arr[10]; }      // Server Password
+    function IsMod    (){ return $this->_arr[11]; }      // Server is running mod?
+    function ModHTTP  (){ return $this->_arr[12]; }      // Mod website
+    function ModFTP   (){ return $this->_arr[13]; }      // Mod FTP
+    function NotUsed  (){ return $this->_arr[14]; }      // Not used
+    function SvrVer   (){ return $this->_arr[15]; }      // Server version
+    function SvrSize  (){ return $this->_arr[16]; }      // Server size
+    function SvrOnly  (){ return $this->_arr[17]; }      // Server only
+    function Custom   (){ return $this->_arr[18]; }      //
+    function VACSec   (){ return $this->_arr[19]; }      // VAC Secure?
+    function Ping     (){ return $this->_arr[20]; }      // Server ping
+    function Players  (){ return $this->_players; }      // Player data
+    function Rules    (){ return $this->_rules;   }      // Rules
 }
 
 /**
- * Start displaying the server information
+ * Start displaying the server information, create instances etc.
  */
 
 $gameServer = new goldSrcQuery($serverIP, $serverPort);
 $gameServer->getDetails();
 $gameServer->getPlayers();
-
 
 $svAddress    = $gameServer->Address();
 $svHostName   = $gameServer->Hostname();
@@ -558,8 +555,6 @@ echo "Server ping: "        .$svPing         ."<br/>"; // Server ping
 echo "Server player data: " .$svPlayerData   ."<br/>"; // Player data
 echo "Server rules: "       .$svRules        ."<br/>"; // Rules
  */
-
-
 ?>
 
 <img src="valve_img.php?svName=<?php echo $svHostName;?>&svAddress=<?php echo $svAddress; ?>&svPort=<?php echo $svPort; ?>&serverStatus=<?php echo $serverStatus; ?>&svActive=<?php echo $svActive;?>&svMax=<?php echo $svMax; ?>&sv_rank=1st&sv_map=<?php echo $svMap;?>" class="border" width="560" height="95" align="middle" />
