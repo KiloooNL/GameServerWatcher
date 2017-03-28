@@ -531,22 +531,33 @@ $svPing       = $gameServer->Ping();
 $svPlayerData = $gameServer->Players();
 $svRules      = $gameServer->Rules();
 
-/** Don't need to display this info.
- * This is for debugging purposes.
- * TODO: ADD ALL FUNCTIONS ABOVE, BELOW.
+/**
+ * NOTE: The commands below are for debugging purposes,
+ * or for displaying further info on the page if needed.
+ * Uncomment for use.
  *
-
-echo "status: "         .$serverStatus ."<br/>"; // Server status (Online/Offline)
-echo "name: "           .$svHostName   ."<br/>"; // Host name
-echo "map: "            .$svMap        ."<br/>"; // Current map
-echo "dir: "            .$svSvrType    ."<br/>"; // Game type
-echo "players: "        .$svActive     ."<br/>"; // Current players
-echo "max: "            .$svMax        ."<br/>"; // Max players
-echo "os: "             .$svSvrOS      ."<br/>"; // Host OS (w = win)
-echo "password: "       .$svPass       ."<br/>"; // Password enabled (0/1)
-echo "secure: "         .$svCustom     ."<br/>"; // VAC secured? (0/1)
-echo "version: "        .$svSvrVer     ."<br/>"; // Server version
-*/
+echo "Server IP: "          .$svAddress      ."<br/>"; // IP Address
+echo "Server Hostname: "    .$svHostName     ."<br/>"; // Hostname / Port
+echo "Current map: "        .$svMap          ."<br/>"; // Current map
+echo "Server mod: "         .$svModName      ."<br/>"; // Server mod
+echo "Server description: " .$svDesc         ."<br/>"; // Server description
+echo "Current players: "    .$svActive       ."<br/>"; // Current players
+echo "Max players: "        .$svMax          ."<br/>"; // Max players
+echo "Protocol: "           .$svProtocol     ."<br/>"; // Protocol
+echo "Server type: "        .$svSvrType      ."<br/>"; // Server Type
+echo "Server OS: "          .$svSvrOS        ."<br/>"; // Server OS
+echo "Server password: "    .$svPass         ."<br/>"; // Server Password
+echo "Server running mod: " .$svIsMod        ."<br/>"; // Server is running mod?
+echo "Mod HTTP: "           .$svModHTTP      ."<br/>"; // Mod website
+echo "Mod FTP: "            .$svModFTP       ."<br/>"; // Mod FTP
+echo "Server version: "     .$svSvrVer       ."<br/>"; // Server version
+echo "Server size: "        .$svSvrSize      ."<br/>"; // Server size
+echo "Server only: "        .$svSvrOnly      ."<br/>"; // Server only
+echo "Server VAC Secure: "  .$svSecure       ."<br/>"; // VAC Secure?
+echo "Server ping: "        .$svPing         ."<br/>"; // Server ping
+echo "Server player data: " .$svPlayerData   ."<br/>"; // Player data
+echo "Server rules: "       .$svRules        ."<br/>"; // Rules
+ */
 
 
 ?>
