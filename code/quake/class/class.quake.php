@@ -15,8 +15,6 @@
  * For a full list of supported servers, see /class/class.quake3.cfg.php
  */
 
-require_once("../../../config/config.php");
-
 class serverStatus {
     var $quake3_games;      // contains the $quake3_games array from class.quake3.cfg.php
     var $quake3_strings;    // contains the $quake3_string array from class.quake3.cfg.php
