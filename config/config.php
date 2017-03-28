@@ -12,6 +12,8 @@
 ########################################
 # Global IP for the following:
 #   : All game servers (it is recommended game servers are on a different IP to reduce lag under heavy load.
+#           TODO: In the future, store server ip's in an array, and this way allow multiple server IP's to be defined
+#           TODO: in the config file.
 #   : FTP
 ########################################
 define("GLOBAL_IP", "127.0.0.1");
