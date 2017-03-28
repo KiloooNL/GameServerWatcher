@@ -14,7 +14,7 @@
  *
  */
 
- require_once("../config/config.php");
+ require_once("../../config/config.php");
  
  // Error codes
 define("ERROR_NOERROR", 0);
@@ -33,4 +33,27 @@ function error($string, $errCode) {
         echo "[ERROR] [Error Code: " . $errCode . "] " . $string . "\n";    
     }
 }
+
+// Catch the error: Fatal error: Maximum execution time of XX seconds exceeded
+register_shutdown_function(function() {
+    $error = error_get_last();
+
+    if ($error['type'] === E_ERROR && strpos($error['message'], 'Maximum execution time of') === 0) {
+        /**
+         * TODO: Make this much neater.
+         */
+        $ip = "IP";
+        $port = "port";
+
+        if(isset($serverIP)) {
+            $ip = "IP of '$serverIP' ";
+        }
+
+        if(isset($serverPort)) {
+            $port = "port of '$port'";
+        }
+
+        echo "The server did not respond. Please check if the server is online, and that the $ip & $port specified are correct.";
+    }
+});
  ?>
