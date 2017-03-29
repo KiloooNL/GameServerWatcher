@@ -23,7 +23,7 @@ define("ERROR_INSOCKET", -2);
 define("ERROR_TIMEOUT", -3);
 
 function debug($string) {
-    if(defined('DEBUG_ENABLED')) {
+    if('DEBUG_ENABLED') {
         echo "<!-- [DEBUG]: " . $string . " -->\n";
     }
 }
