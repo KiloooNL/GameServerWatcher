@@ -10,7 +10,7 @@
  *
  * This PHP class file is the classes for banner generation
  */
-header("Content-type: image/png");
+//header("Content-type: image/png");
 
 require_once("../../config/config.php");
 
@@ -106,7 +106,7 @@ class bannerImage {
         imagecolorallocate($bannerImage, $red, $green, $blue);
         debug("Allocated colors ($red, $green, $blue) to $bannerImage.");
 
-        $this->drawText($this->bannerImage, $this->masterFont, $this->masterFontSize, $this->masterShadowColor, $this->masterColor);
+        $this->drawText();
         $this->playerChart();
         $this->drawMap();
     }
@@ -114,8 +114,12 @@ class bannerImage {
     /**
      * Draw the text and shadow around text.
      */
-    function drawText($image, $font, $fontSize, $shadowColor, $textColor) {
+    function drawText() {
         $svVars = $this->svVars;
+        $fontSize = $this->masterFontSize;
+        $font = $this->masterFont;
+        $shadowColor = $this->masterShadowColor;
+        $image = $this->bannerImage;
         $color = $this->masterShadowColor;
 
         // TODO: change to class level cvar
@@ -208,8 +212,6 @@ class bannerImage {
         // TODO: CHANGE THIS SO EACH FOLDER IS INDEPENDENT TO THE SERVER GAME!
         if(file_exists(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png")) {
             $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png");
-        } else {
-            // Use the "No image found" picture
         }
 
         // X,Y positioning
