@@ -10,6 +10,8 @@
  *
  * This PHP class file is the classes for banner generation
  */
+header("Content-type: image/png");
+
 require_once("../../config/config.php");
 
 class bannerImage {
@@ -17,6 +19,9 @@ class bannerImage {
     var $green = 0;
     var $blue = 0;
     var $bannerImage;
+    var $mapImage;
+    var $mapSX;
+    var $mapSY;
 
     var $masterFont;
     var $masterFontSize;
@@ -31,7 +36,6 @@ class bannerImage {
     var $svPlayers;
     var $svStatus;
     var $svRank;
-
 
     /**
      * Font colors
@@ -53,6 +57,9 @@ class bannerImage {
     }
 
     function fontColor($color) {
+        $this->fontStyle();
+        $this->fontSize();
+
         // Set the color
         switch($color) {
             case 'white':
@@ -83,20 +90,25 @@ class bannerImage {
         }
     }
 
-    function fontStyle($font) {
-
+    function fontStyle() {
+        $font = ROOT_DIR . "/display/trebuc.ttf";
         debug("Font: " . $font);
-        return $font;
+        $this->masterFont = $font;
     }
 
-    function fontSize($size) {
+    function fontSize() {
+        $size = 9;
         debug("Font size: " . $size);
-        return $size;
+        $this->masterFontSize = $size;
     }
 
     function allocateColor($bannerImage, $red, $green, $blue) {
         imagecolorallocate($bannerImage, $red, $green, $blue);
         debug("Allocated colors ($red, $green, $blue) to $bannerImage.");
+
+        $this->drawText($this->bannerImage, $this->masterFont, $this->masterFontSize, $this->masterShadowColor, $this->masterColor);
+        $this->playerChart();
+        $this->drawMap();
     }
 
     /**
@@ -109,6 +121,7 @@ class bannerImage {
         // TODO: change to class level cvar
         $statusColor = imagecolorallocate($this->bannerImage, 45, 151, 56);
 
+        debug("Drawing shadows... ");
         /***
          * First, we draw the shadows for each array item
          */
@@ -153,10 +166,7 @@ class bannerImage {
          *  - usage is:
          *    imagettftext(image, font size, angle, x, y, font color, font file, text);
          */
-        /*
-            Draw the actual text (white)
-            - imagettftext(image,font_size,angle,x,y,color,fontfile,text);
-        */
+        debug("Drawing text... ");
         imagettftext($image, $fontSize, 0, 116, 28, $color, $font, $svVars[0]);
         imagettftext($image, $fontSize, 0, 115, 58, $color, $font, $svVars[1]);
         imagettftext($image, $fontSize, 0, 221, 58, $color, $font, $svVars[2]);
@@ -164,7 +174,6 @@ class bannerImage {
         imagettftext($image, $fontSize, 0, 148, 88, $color, $font, $svVars[4]);
         imagettftext($image, $fontSize, 0, 276, 58, $statusColor, $font, $svVars[5]);
         imagettftext($image, $fontSize, 0, 222, 88, $color, $font, $svVars[6]);
-
     }
 
     /**
@@ -175,7 +184,11 @@ class bannerImage {
      */
     function playerChart() {
         // Get the number of players, and use the pie image for X amount of current players
-        $playerChart = imagecreatefrompng(ROOT_DIR . "/images/player_chart/" . $this->svVars[4] . ".png");
+        if(!isset($this->svVars[4])) {
+            $playerChart = imagecreatefrompng(ROOT_DIR . "/images/player_chart/0.png");
+        } else {
+            $playerChart = imagecreatefrompng(ROOT_DIR . "/images/player_chart/" . $this->svVars[4] . ".png");
+        }
 
         // Sets the margins for the player chart and gets the height & width of the chart image.
         $margRight = 422;
@@ -184,12 +197,43 @@ class bannerImage {
         $sy = imagesy($playerChart); // Y pos
 
         // Copy the player chart onto the banner using the margin offsets and the banner width to calculate positioning of the player chart
+        debug("Drawing player chart... ");
         imagecopy($this->bannerImage, $playerChart, imagesx($this->bannerImage) - $sx - $margRight, imagesy($this->bannerImage) - $sy - $margBottom, 0, 0, imagesx($playerChart), imagesy($playerChart));
+    }
+
+    function drawMap() {
+        $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/NoImage.png");
+
+        // Check if current server map exists in image folder
+        // TODO: CHANGE THIS SO EACH FOLDER IS INDEPENDENT TO THE SERVER GAME!
+        if(file_exists(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png")) {
+            $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png");
+        } else {
+            // Use the "No image found" picture
+        }
+
+        // X,Y positioning
+        $mapRight = 5;
+        $mapBottom = -13;
+        $this->mapSX = imagesx($this->mapImage);
+        $this->mapSY = imagesx($this->mapImage);
+
+        // Show PIP of map
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 479, 91, $this->masterColor, $this->masterFont, "");
+
+        // Draw it!
+        debug("Drawing map using image (" . $this->mapImage . ")... ");
+        imagecopy($this->bannerImage, $this->mapImage, imagesx($this->bannerImage) - $this->mapSX - $mapRight, imagesy($this->bannerImage) - $this->mapSY - $mapBottom, 0, 0, imagesx($this->mapImage), imagesy($this->mapImage));
+
+        // Kaboom! Destroy it!
+        $this->destroyBanner($this->bannerImage);
     }
 
     function destroyBanner($image) {
         // Save PNG image and free memory
+        debug("Drawing PNG image...");
         imagepng($image);
+        debug("Destroying PNG image...");
         imagedestroy($image);
     }
 }
