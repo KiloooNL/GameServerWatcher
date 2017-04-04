@@ -531,30 +531,32 @@ $svRules      = $gameServer->Rules();
 /**
  * NOTE: The commands below are for debugging purposes,
  * or for displaying further info on the page if needed.
- * Uncomment for use.
+ * Change DEBUG_ENABLED to '1' in config.php to enable site-wide debugging.
  */
-echo "Server IP: "                      .$svAddress      ."<br/>"; // IP Address
-echo "Server Hostname: "                .$svHostName     ."<br/>"; // Hostname / Port
-echo "Current map: "                    .$svMap          ."<br/>"; // Current map
-echo "Server mod: "                     .$svModName      ."<br/>"; // Server mod
-echo "Server description: "             .$svDesc         ."<br/>"; // Server description
-echo "Current players: "                .$svActive       ."<br/>"; // Current players
-echo "Max players: "                    .$svMax          ."<br/>"; // Max players
-echo "Protocol: "                       .$svProtocol     ."<br/>"; // Protocol
-echo "Server type: "                    .$svSvrType      ."<br/>"; // Server Type
-echo "Server OS: "                      .$svSvrOS        ."<br/>"; // Server OS
-echo "Server requires a password: "     .$svPass         ."<br/>"; // Server Password
-echo "Server running a mod: "           .$svIsMod        ."<br/>"; // Server is running mod?
-echo "Mod HTTP: "                       .$svModHTTP      ."<br/>"; // Mod website
-echo "Mod FTP: "                        .$svModFTP       ."<br/>"; // Mod FTP
-echo "Server version: "                 .$svSvrVer       ."<br/>"; // Server version
-echo "Server size: "                    .$svSvrSize      ."<br/>"; // Server size
-echo "Server only: "                    .$svSvrOnly      ."<br/>"; // Server only
-echo "Server VAC Secure: "              .$svSecure       ."<br/>"; // VAC Secure?
-echo "Server ping: "                    .$svPing         ."<br/>"; // Server ping
-echo "Server player data: "             .print_r($svPlayerData, true)   ."<br/>"; // Player data
-echo "Server rules: "                   .print_r($svRules, true)        ."<br/>"; // Rules
-
+if(DEBUG_ENABLED == 1) {
+    debug("Gathering server data...");
+    echo "Server IP: " . $svAddress . "<br/>"; // IP Address
+    echo "Server Hostname: " . $svHostName . "<br/>"; // Hostname / Port
+    echo "Current map: " . $svMap . "<br/>"; // Current map
+    echo "Server mod: " . $svModName . "<br/>"; // Server mod
+    echo "Server description: " . $svDesc . "<br/>"; // Server description
+    echo "Current players: " . $svActive . "<br/>"; // Current players
+    echo "Max players: " . $svMax . "<br/>"; // Max players
+    echo "Protocol: " . $svProtocol . "<br/>"; // Protocol
+    echo "Server type: " . $svSvrType . "<br/>"; // Server Type
+    echo "Server OS: " . $svSvrOS . "<br/>"; // Server OS
+    echo "Server requires a password: " . $svPass . "<br/>"; // Server Password
+    echo "Server running a mod: " . $svIsMod . "<br/>"; // Server is running mod?
+    echo "Mod HTTP: " . $svModHTTP . "<br/>"; // Mod website
+    echo "Mod FTP: " . $svModFTP . "<br/>"; // Mod FTP
+    echo "Server version: " . $svSvrVer . "<br/>"; // Server version
+    echo "Server size: " . $svSvrSize . "<br/>"; // Server size
+    echo "Server only: " . $svSvrOnly . "<br/>"; // Server only
+    echo "Server VAC Secure: " . $svSecure . "<br/>"; // VAC Secure?
+    echo "Server ping: " . $svPing . "<br/>"; // Server ping
+    echo "Server player data: " . print_r($svPlayerData, true) . "<br/>"; // Player data
+    echo "Server rules: " . print_r($svRules, true) . "<br/>"; // Rules
+}
 ?>
 
 <img src="valve_img.php?svName=<?php echo $svHostName;?>&svAddress=<?php echo $svAddress; ?>&svPort=<?php echo $svPort; ?>&serverStatus=<?php echo $serverStatus; ?>&svActive=<?php echo $svActive;?>&svMax=<?php echo $svMax; ?>&sv_rank=1st&sv_map=<?php echo $svMap;?>" class="border" width="560" height="95" align="middle" />
