@@ -56,6 +56,8 @@ class bannerImage {
         }
     }
 
+    // TODO: Just make fontColor, fontStyle and fontSize into one function.
+    // TODO: it's a little excessive to have it as 3 functions.
     function fontColor($color) {
         $this->fontStyle();
         $this->fontSize();
