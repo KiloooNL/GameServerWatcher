@@ -10,7 +10,9 @@
  *
  * This PHP class file is the classes for banner generation
  */
-//header("Content-type: image/png");
+if(!DEBUG_ENABLED) {
+    header("Content-type: image/png");
+}
 
 require_once("../../config/config.php");
 
@@ -54,15 +56,27 @@ class bannerImage {
             $svPlayers = '';
             debug("Server is offline.");
         }
+
+        // Process banner
+        $this->processBanner();
     }
 
-    // TODO: Just make fontColor, fontStyle and fontSize into one function.
-    // TODO: it's a little excessive to have it as 3 functions.
-    function fontColor($color) {
-        $this->fontStyle();
-        $this->fontSize();
+    function processBanner() {
+        $this->bannerFont("white");
+    }
+
+    function bannerFont($color) {
+        // Init vars
+        $font = ROOT_DIR . "/display/trebuc.ttf";
+        debug("Font: " . $font);
+        $this->masterFont = $font;
+
+        $size = 9;
+        debug("Font size: " . $size);
+        $this->masterFontSize = $size;
 
         // Set the color
+        // TODO: Add more colors, maybe make it an array as well?
         switch($color) {
             case 'white':
                 $red = $green = $blue = 255;
@@ -79,38 +93,33 @@ class bannerImage {
         }
 
         // Allocate the color
-        debug("Allocating color...");
-        $this->allocateColor($this->bannerImage, $red, $green, $blue);
+        if(isset($this->red) && isset($this->blue) && isset($this->green)) {
+            debug("Allocating color...");
+            $this->allocateColor($this->bannerImage, $red, $green, $blue);
+        } else {
+            debug("No color allocated! Using default color 255, 255, 255 (White)");
+            $this->allocateColor($this->bannerImage, 255, 255, 255);
+        }
 
-        // Set master font
+        // Set master color
         debug("Setting masterColor to: " . $color);
         $this->masterColor = $color;
+
 
         if(!isset($this->masterShadowColor)) {
             debug("Setting masterShadow color to black.");
             $this->masterShadowColor = imagecolorallocate($this->bannerImage, 0, 0, 0);
         }
-    }
 
-    function fontStyle() {
-        $font = ROOT_DIR . "/display/trebuc.ttf";
-        debug("Font: " . $font);
-        $this->masterFont = $font;
-    }
-
-    function fontSize() {
-        $size = 9;
-        debug("Font size: " . $size);
-        $this->masterFontSize = $size;
+        // Now all the font settings are configured, draw text, chart and map image
+        $this->drawText();
+        $this->playerChart();
+        $this->drawMap();
     }
 
     function allocateColor($bannerImage, $red, $green, $blue) {
         imagecolorallocate($bannerImage, $red, $green, $blue);
         debug("Allocated colors ($red, $green, $blue) to $bannerImage.");
-
-        $this->drawText();
-        $this->playerChart();
-        $this->drawMap();
     }
 
     /**
@@ -244,4 +253,3 @@ class bannerImage {
 
 $myBanner = new bannerImage();
 $myBanner->init("test", "1", "Online");
-$myBanner->fontColor("white");
