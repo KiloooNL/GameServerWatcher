@@ -195,6 +195,12 @@ class getMapImages {
 
 // Creating an instance for debugging.
 $grabImages = new getMapImages();
+
+// TODO: change this to a foreach
+// eg; foreach($gameServerType as $game) {
+//		grabImages($game);
+//     }
+
 $grabImages->css();
 $grabImages->hl1();
 $grabImages->quake3();
