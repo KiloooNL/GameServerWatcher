@@ -123,58 +123,70 @@ class bannerImage {
     }
 
     /**
-     * Draw the text and shadow around text.
+     * Draw the shadow around text.
      */
-    function drawText() {
+    function drawShadow($x, $y, $i) {
         $svVars = $this->svVars;
         $fontSize = $this->masterFontSize;
         $font = $this->masterFont;
         $shadowColor = $this->masterShadowColor;
         $image = $this->bannerImage;
-        $color = $this->masterShadowColor;
+
+        debug("Drawing shadows... ");
+        imagettftext($image, $fontSize, 0, $x, $y, $shadowColor, $font, $svVars[$i]);
+    }
+
+    /**
+     * Draw the text
+     */
+    function drawText() {
+        $svVars = $this->svVars;
+        $fontSize = $this->masterFontSize;
+        $font = $this->masterFont;
+        $image = $this->bannerImage;
+        $color = $this->masterColor;
 
         // TODO: change to class level cvar
         $statusColor = imagecolorallocate($this->bannerImage, 45, 151, 56);
 
-        debug("Drawing shadows... ");
         /***
          * First, we draw the shadows for each array item
          */
         // Left
-        imagettftext($image, $fontSize, 0, 115, 27, $shadowColor, $font, $svVars[0]);
-        imagettftext($image, $fontSize, 0, 114, 57, $shadowColor, $font, $svVars[1]);
-        imagettftext($image, $fontSize, 0, 221, 57, $shadowColor, $font, $svVars[2]);
-        imagettftext($image, $fontSize, 0, 274, 87, $shadowColor, $font, $svVars[3]);
-        imagettftext($image, $fontSize, 0, 147, 87, $shadowColor, $font, $svVars[4]);
-        imagettftext($image, $fontSize, 0, 275, 57, $shadowColor, $font, $svVars[5]);
-        imagettftext($image, $fontSize, 0, 212, 87, $shadowColor, $font, $svVars[6]);
+        $this->drawShadow(115, 27, 0);
+        $this->drawShadow(114, 57, 1);
+        $this->drawShadow(221, 57, 2);
+        $this->drawShadow(274, 87, 3);
+        $this->drawShadow(147, 87, 4);
+        $this->drawShadow(275, 57, 5);
+        $this->drawShadow(212, 87, 6);
 
         // Top
-        imagettftext($image, $fontSize, 0, 117, 27, $shadowColor, $font, $svVars[0]);
-        imagettftext($image, $fontSize, 0, 116, 57, $shadowColor, $font, $svVars[1]);
-        imagettftext($image, $fontSize, 0, 222, 57, $shadowColor, $font, $svVars[2]);
-        imagettftext($image, $fontSize, 0, 276, 87, $shadowColor, $font, $svVars[3]);
-        imagettftext($image, $fontSize, 0, 149, 87, $shadowColor, $font, $svVars[4]);
-        imagettftext($image, $fontSize, 0, 277, 57, $shadowColor, $font, $svVars[5]);
-        imagettftext($image, $fontSize, 0, 223, 87, $shadowColor, $font, $svVars[6]);
+        $this->drawShadow(117, 27, 0);
+        $this->drawShadow(116, 57, 1);
+        $this->drawShadow(222, 57, 2);
+        $this->drawShadow(276, 87, 3);
+        $this->drawShadow(149, 87, 4);
+        $this->drawShadow(277, 57, 5);
+        $this->drawShadow(223, 87, 6);
 
         // Bottom
-        imagettftext($image, $fontSize, 0, 115, 29, $shadowColor, $font, $svVars[0]);
-        imagettftext($image, $fontSize, 0, 114, 59, $shadowColor, $font, $svVars[1]);
-        imagettftext($image, $fontSize, 0, 220, 59, $shadowColor, $font, $svVars[2]);
-        imagettftext($image, $fontSize, 0, 274, 89, $shadowColor, $font, $svVars[3]);
-        imagettftext($image, $fontSize, 0, 147, 89, $shadowColor, $font, $svVars[4]);
-        imagettftext($image, $fontSize, 0, 275, 59, $shadowColor, $font, $svVars[5]);
-        imagettftext($image, $fontSize, 0, 212, 89, $shadowColor, $font, $svVars[6]);
+        $this->drawShadow(115, 29, 0);
+        $this->drawShadow(114, 59, 1);
+        $this->drawShadow(220, 59, 2);
+        $this->drawShadow(274, 89, 3);
+        $this->drawShadow(147, 89, 4);
+        $this->drawShadow(275, 59, 5);
+        $this->drawShadow(212, 89, 6);
 
         // Right
-        imagettftext($image, $fontSize, 0, 117, 29, $shadowColor, $font, $svVars[0]);
-        imagettftext($image, $fontSize, 0, 116, 59, $shadowColor, $font, $svVars[1]);
-        imagettftext($image, $fontSize, 0, 222, 59, $shadowColor, $font, $svVars[2]);
-        imagettftext($image, $fontSize, 0, 276, 89, $shadowColor, $font, $svVars[3]);
-        imagettftext($image, $fontSize, 0, 149, 89, $shadowColor, $font, $svVars[4]);
-        imagettftext($image, $fontSize, 0, 277, 59, $shadowColor, $font, $svVars[5]);
-        imagettftext($image, $fontSize, 0, 223, 89, $shadowColor, $font, $svVars[6]);
+        $this->drawShadow(117, 29, 0);
+        $this->drawShadow(116, 59, 1);
+        $this->drawShadow(222, 59, 2);
+        $this->drawShadow(276, 89, 3);
+        $this->drawShadow(149, 89, 4);
+        $this->drawShadow(277, 59, 5);
+        $this->drawShadow(223, 89, 6);
 
         /***
          * Then, we draw the actual text for each array item
