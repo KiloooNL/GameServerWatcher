@@ -46,7 +46,7 @@ class bannerImage {
      *  0, 0, 0       = Black
      *  255, 255, 255 = White
      */
-    function init($svHostname, $svPlayers, $svStatus) {
+    function createBanner($svHostname, $svPlayers, $svStatus) {
         $this->bannerImage = imagecreatefrompng(ROOT_DIR."/images/banner/css/css_banner.png");
         debug("Banner image is: " . $this->bannerImage);
         $svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
@@ -237,7 +237,7 @@ class bannerImage {
             $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png");
         }
 
-        // X,Y positioning
+        // X, Y positioning
         $mapRight = 5;
         $mapBottom = -13;
         $this->mapSX = imagesx($this->mapImage);
@@ -264,4 +264,4 @@ class bannerImage {
 }
 
 $myBanner = new bannerImage();
-$myBanner->init("test", "1", "Online");
+$myBanner->createBanner("test", "1", "Online");
