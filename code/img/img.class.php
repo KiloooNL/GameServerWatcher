@@ -76,30 +76,7 @@ class bannerImage {
         $this->masterFontSize = $size;
 
         // Set the color
-        // TODO: Add more colors, maybe make it an array as well?
-        switch($color) {
-            case 'white':
-                $red = $green = $blue = 255;
-                break;
-            case 'grey':
-                break;
-            case 'black':
-                $red = $green = $blue = 0;
-                break;
-            case 'dark blue':
-                $red = $green = 0;
-                $blue = 60;
-                break;
-        }
-
-        // Allocate the color
-        if(isset($this->red) && isset($this->blue) && isset($this->green)) {
-            debug("Allocating color...");
-            $this->allocateColor($this->bannerImage, $red, $green, $blue);
-        } else {
-            debug("No color allocated! Using default color 255, 255, 255 (White)");
-            $this->allocateColor($this->bannerImage, 255, 255, 255);
-        }
+        $this->allocateColor($color);
 
         // Set master color
         debug("Setting masterColor to: " . $color);
@@ -117,9 +94,38 @@ class bannerImage {
         $this->drawMap();
     }
 
-    function allocateColor($bannerImage, $red, $green, $blue) {
-        imagecolorallocate($bannerImage, $red, $green, $blue);
-        debug("Allocated colors ($red, $green, $blue) to $bannerImage.");
+    function allocateColor($color) {
+        $red = $green = $blue = 0;
+
+        switch($color) {
+            case 'white':
+                $this->red = $this->green = $this->blue = 255;
+                break;
+            case 'red':
+                $this->red = 255;
+                break;
+            case 'green':
+                $this->green = 255;
+                break;
+            case 'blue':
+                $this->blue = 255;
+                break;
+            case 'black':
+                $this->red = $this->green = $this->blue = 0;
+                break;
+        }
+
+        // Allocate the color
+        if(isset($red) && isset($blue) && isset($green)) {
+            debug("Allocating colors...");
+            $allocateColor = imagecolorallocate($this->bannerImage, $red, $green, $blue);
+        } else {
+            debug("No color allocated! Using default color 255, 255, 255 (White)");
+            $allocateColor = imagecolorallocate($this->bannerImage, 255, 255, 255);
+        }
+
+        debug("Allocated colors ($red, $green, $blue) to $this->bannerImage.");
+        return $allocateColor;
     }
 
     /**
@@ -145,9 +151,7 @@ class bannerImage {
         $font = $this->masterFont;
         $image = $this->bannerImage;
         $color = $this->masterColor;
-
-        // TODO: change to class level cvar
-        $statusColor = imagecolorallocate($this->bannerImage, 45, 151, 56);
+        $statusColor = $this->allocateColor(SERVER_ONLINE_COLOR);
 
         /***
          * First, we draw the shadows for each array item
@@ -264,4 +268,4 @@ class bannerImage {
 }
 
 $myBanner = new bannerImage();
-$myBanner->createBanner("test", "1", "Online");
+$myBanner->createBanner("127.0.0.1", "27015", "Online");

@@ -49,6 +49,14 @@ require_once(ROOT_DIR . "/code/error.php");
 define('DEBUG_ENABLED', 1);
 define('ERROR_LOGGING_ENABLED', 1);
 
+########################################
+# Style settings
+#   : SERVER_OFFLINE_COLOR: Default color for "Server Offline" text. (Red)
+#   : SERVER_ONLINE_COLOR:  Default color for "Server Online" text. (Green)
+########################################
+define('SERVER_OFFLINE_COLOR', 'RED');
+define('SERVER_ONLINE_COLOR', 'GREEN');
+
 /************************************************
  *  WARNING!
  *
