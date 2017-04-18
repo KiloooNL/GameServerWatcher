@@ -97,7 +97,7 @@ class bannerImage {
     function allocateColor($color) {
         $red = $green = $blue = 0;
 
-        switch($color) {
+        switch(strtolower($color)) {
             case 'white':
                 $this->red = $this->green = $this->blue = 255;
                 break;
