@@ -10,11 +10,10 @@
  *
  * This PHP class file is the classes for banner generation
  */
+require_once("../../config/config.php");
 if(!DEBUG_ENABLED) {
     header("Content-type: image/png");
 }
-
-require_once("../../config/config.php");
 
 class bannerImage {
     var $red = 0;
@@ -46,7 +45,7 @@ class bannerImage {
      *  0, 0, 0       = Black
      *  255, 255, 255 = White
      */
-    function createBanner($svHostname, $svPlayers, $svStatus) {
+    function createBanner($svHostname, $svPort, $svStatus) {
         $this->bannerImage = imagecreatefrompng(ROOT_DIR."/images/banner/css/css_banner.png");
         debug("Banner image is: " . $this->bannerImage);
         $svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
@@ -150,7 +149,7 @@ class bannerImage {
         $fontSize = $this->masterFontSize;
         $font = $this->masterFont;
         $image = $this->bannerImage;
-        $color = $this->masterColor;
+        $color = $this->allocateColor($this->masterColor);
         $statusColor = $this->allocateColor(SERVER_ONLINE_COLOR);
 
         /***
@@ -248,7 +247,7 @@ class bannerImage {
         $this->mapSY = imagesx($this->mapImage);
 
         // Show PIP of map
-        imagettftext($this->bannerImage, $this->masterFontSize, 0, 479, 91, $this->masterColor, $this->masterFont, "");
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 479, 91, $this->allocateColor($this->masterColor), $this->masterFont, "");
 
         // Draw it!
         debug("Drawing map using image (" . $this->mapImage . ")... ");
@@ -268,4 +267,6 @@ class bannerImage {
 }
 
 $myBanner = new bannerImage();
-$myBanner->createBanner("127.0.0.1", "27015", "Online");
+$serverIP = $_GET['svIP'];
+$serverPort = $_GET['svPort'];
+$myBanner->createBanner($serverIP, $serverPort, "Online");
