@@ -66,6 +66,13 @@ define('SERVER_ONLINE_COLOR', 'GREEN');
  * UNLESS YOU KNOW WHAT YOU'RE DOING
  ***********************************************/
 
+/**
+ * Check if extensions are enabled
+ */
+if(!extension_loaded('gd')) {
+    debug("php_gd2.dll needs to be enabled in php.ini for banner images to work.");
+}
+
 /************************
  * Page load time diagnostic function
  * not used right now, but implemented for future use
