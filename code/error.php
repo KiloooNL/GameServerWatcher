@@ -14,16 +14,16 @@
  *
  */
 
- require_once("../../config/config.php");
+require_once("../../config/config.php");
  
- // Error codes
+// Error codes
 define("ERROR_NOERROR", 0);
 define("ERROR_NOSERVER", -1);
 define("ERROR_INSOCKET", -2);
 define("ERROR_TIMEOUT", -3);
 
 function debug($string) {
-    if('DEBUG_ENABLED') {
+    if(DEBUG_ENABLED) {
         echo "<!-- [DEBUG]: " . $string . " -->\n";
     }
 }
