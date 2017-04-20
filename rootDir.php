@@ -12,6 +12,7 @@
  *
  */
 
-// Root directory
-define("ROOT_DIR", __DIR__);
+// Root directory, replace '\' with '/'
+$root = str_replace("\\", "/", __DIR__);
+define("ROOT_DIR", $root);
 ?>
