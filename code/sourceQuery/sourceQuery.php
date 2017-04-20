@@ -13,8 +13,8 @@
  */
 
 // Server IP / Port
-$serverIP = "192.168.1.147";
-$serverPort = 27015;
+$serverIP = "119.252.189.28";
+$serverPort = 27035;
 
 require_once("../../config/config.php");
 
@@ -126,26 +126,26 @@ if(!$svStatus) {
 /** Don't need to display this info.
  * This is for debugging purposes.
  */
-    echo "status: "         .$svStatus              ."<br/>"; // Server status (Online/Offline)
-    echo "network: "        .$query['network']      ."<br/>"; // Region
-    echo "name: "           .$query['name']         ."<br/>"; // Host name
-    echo "map: "            .$query['map']          ."<br/>"; // Current map
-    echo "dir: "            .$query['dir']          ."<br/>"; // Game type
-    echo "description: "    .$query['description']  ."<br/>"; // Game type description
-    echo "id: "             .$query['appid']        ."<br/>"; // App ID
-    echo "players: "        .$query['players']      ."<br/>"; // Current players
-    echo "max: "            .$query['max']          ."<br/>"; // Max players
-    echo "bots: "           .$query['bots']         ."<br/>"; // Number of bots
-    echo "dedicated: "      .$query['dedicated']    ."<br/>"; // Dedicated server?
-    echo "os: "             .$query['os']           ."<br/>"; // Host OS (w = win)
-    echo "password: "       .$query['password']     ."<br/>"; // Password enabled (0/1)
-    echo "secure: "         .$query['secure']       ."<br/>"; // VAC secured? (0/1)
-    echo "version: "        .$query['version']      ."<br/>"; // Server version
- /*
- */
+if(DEBUG_ECHO) {
+    echo "status: " . $svStatus . "<br/>"; // Server status (Online/Offline)
+    echo "network: " . $query['network'] . "<br/>"; // Region
+    echo "name: " . $query['name'] . "<br/>"; // Host name
+    echo "map: " . $query['map'] . "<br/>"; // Current map
+    echo "dir: " . $query['dir'] . "<br/>"; // Game type
+    echo "description: " . $query['description'] . "<br/>"; // Game type description
+    echo "id: " . $query['appid'] . "<br/>"; // App ID
+    echo "players: " . $query['players'] . "<br/>"; // Current players
+    echo "max: " . $query['max'] . "<br/>"; // Max players
+    echo "bots: " . $query['bots'] . "<br/>"; // Number of bots
+    echo "dedicated: " . $query['dedicated'] . "<br/>"; // Dedicated server?
+    echo "os: " . $query['os'] . "<br/>"; // Host OS (w = win)
+    echo "password: " . $query['password'] . "<br/>"; // Password enabled (0/1)
+    echo "secure: " . $query['secure'] . "<br/>"; // VAC secured? (0/1)
+    echo "version: " . $query['version'] . "<br/>"; // Server version
+}
 
 
 $svRank = "1st"; // TODO: Scrape this information from gametracker.rs in the future for a true rank.
 ?>
 
-<img src="csImg.php?svName="<?php echo $query['name']; ?>"&svAddress="<?php echo $serverIP; ?>"&svPort="<?php echo $serverPort; ?>"&svStatus="<?php echo $svStatus; ?>"&svPlayers="<?php echo $query['players']; ?>"&svMax="<?php echo $query['max']; ?>"&svRank="<?php echo $svRank; ?>"&svMap="<?php echo $query['map']; ?>" class="border" width="560" height="95" align="middle" />
+<img src="../img/img.class.php?svName='<?php echo $query['name']; ?>'&svAddress='<?php echo $serverIP; ?>'&svPort='<?php echo $serverPort; ?>'&svStatus='<?php echo $svStatus; ?>'&svPlayers='<?php echo $query['players']; ?>'&svMax='<?php echo $query['max']; ?>'&svRank='<?php echo $svRank; ?>'&svMap='<?php echo $query['map']; ?>" class="border" width="560" height="95" align="middle" />
