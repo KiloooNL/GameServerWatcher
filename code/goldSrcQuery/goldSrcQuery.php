@@ -20,8 +20,8 @@
  *
  */
 
-$serverIP = "192.168.1.147";
-$serverPort = 27016;    // SRCDS Default Port is: 27015.
+$serverIP = "213.238.173.151";
+$serverPort = 27015;    // SRCDS Default Port is: 27015.
 
 // TODO: Maybe remove this later and add if(is_resource) to the goldSrcQuery class
 $fp = fsockopen("udp://".$serverIP, $serverPort, $errstr, $errno, 5);
@@ -509,7 +509,7 @@ $svHostName   = $gameServer->Hostname();
 $svMap        = $gameServer->Map();
 $svModName    = $gameServer->ModName();
 $svDesc       = $gameServer->Desc();
-$svActive     = $gameServer->Active();
+$svPlayers    = $gameServer->Active();
 $svMax        = $gameServer->Max();
 $svProtocol   = $gameServer->Protocol();
 $svSvrType    = $gameServer->SvrType();
@@ -535,28 +535,27 @@ $svRules      = $gameServer->Rules();
  */
 if(DEBUG_ENABLED) {
     debug("Gathering server data...");
-    echo "Server IP: " . $svAddress . "<br/>"; // IP Address
-    echo "Server Hostname: " . $svHostName . "<br/>"; // Hostname / Port
-    echo "Current map: " . $svMap . "<br/>"; // Current map
-    echo "Server mod: " . $svModName . "<br/>"; // Server mod
-    echo "Server description: " . $svDesc . "<br/>"; // Server description
-    echo "Current players: " . $svActive . "<br/>"; // Current players
-    echo "Max players: " . $svMax . "<br/>"; // Max players
-    echo "Protocol: " . $svProtocol . "<br/>"; // Protocol
-    echo "Server type: " . $svSvrType . "<br/>"; // Server Type
-    echo "Server OS: " . $svSvrOS . "<br/>"; // Server OS
+    echo "Server IP: "                  . $svAddress . "<br/>"; // IP Address
+    echo "Server Hostname: "            . $svHostName . "<br/>"; // Hostname / Port
+    echo "Current map: "                . $svMap . "<br/>"; // Current map
+    echo "Server mod: "                 . $svModName . "<br/>"; // Server mod
+    echo "Server description: "         . $svDesc . "<br/>"; // Server description
+    echo "Current players: "            . $svPlayers . "<br/>"; // Current players
+    echo "Max players: "                . $svMax . "<br/>"; // Max players
+    echo "Protocol: "                   . $svProtocol . "<br/>"; // Protocol
+    echo "Server type: "                . $svSvrType . "<br/>"; // Server Type
+    echo "Server OS: "                  . $svSvrOS . "<br/>"; // Server OS
     echo "Server requires a password: " . $svPass . "<br/>"; // Server Password
-    echo "Server running a mod: " . $svIsMod . "<br/>"; // Server is running mod?
-    echo "Mod HTTP: " . $svModHTTP . "<br/>"; // Mod website
-    echo "Mod FTP: " . $svModFTP . "<br/>"; // Mod FTP
-    echo "Server version: " . $svSvrVer . "<br/>"; // Server version
-    echo "Server size: " . $svSvrSize . "<br/>"; // Server size
-    echo "Server only: " . $svSvrOnly . "<br/>"; // Server only
-    echo "Server VAC Secure: " . $svSecure . "<br/>"; // VAC Secure?
-    echo "Server ping: " . $svPing . "<br/>"; // Server ping
-    echo "Server player data: " . print_r($svPlayerData, true) . "<br/>"; // Player data
-    echo "Server rules: " . print_r($svRules, true) . "<br/>"; // Rules
+    echo "Server running a mod: "       . $svIsMod . "<br/>"; // Server is running mod?
+    echo "Mod HTTP: "                   . $svModHTTP . "<br/>"; // Mod website
+    echo "Mod FTP: "                    . $svModFTP . "<br/>"; // Mod FTP
+    echo "Server version: "             . $svSvrVer . "<br/>"; // Server version
+    echo "Server size: "                . $svSvrSize . "<br/>"; // Server size
+    echo "Server only: "                . $svSvrOnly . "<br/>"; // Server only
+    echo "Server VAC Secure: "          . $svSecure . "<br/>"; // VAC Secure?
+    echo "Server ping: "                . $svPing . "<br/>"; // Server ping
+    echo "Server player data: "         . print_r($svPlayerData, true) . "<br/>"; // Player data
+    echo "Server rules: "               . print_r($svRules, true) . "<br/>"; // Rules
 }
 ?>
-
-<img src="valve_img.php?svName=<?php echo $svHostName;?>&svAddress=<?php echo $svAddress; ?>&svPort=<?php echo $svPort; ?>&serverStatus=<?php echo $serverStatus; ?>&svActive=<?php echo $svActive;?>&svMax=<?php echo $svMax; ?>&sv_rank=1st&sv_map=<?php echo $svMap;?>" class="border" width="560" height="95" align="middle" />
+<img src="../img/img.class.php?svName='<?php echo $svHostName;?>'&svAddress='<?php echo $svAddress; ?>'&svPort='<?php echo $serverPort; ?>'&svStatus='<?php echo $serverStatus; ?>'&svPlayers='<?php echo $svPlayers;?>'&svMax='<?php echo $svMax; ?>'&svRank='1st'&svMap='<?php echo $svMap;?>'" class="border" width="560" height="95" align="middle" />
