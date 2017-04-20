@@ -29,7 +29,7 @@ function debug($string) {
 }
 
 function error($string, $errCode) {
-    if(defined('ERROR_LOGGING_ENABLED')) {
+    if(ERROR_LOGGING_ENABLED) {
         echo "[ERROR] [Error Code: " . $errCode . "] " . $string . "\n";    
     }
 }
@@ -56,4 +56,3 @@ register_shutdown_function(function() {
         echo "The server did not respond. Please check if the server is online, and that the $ip & $port specified are correct.";
     }
 });
- ?>
