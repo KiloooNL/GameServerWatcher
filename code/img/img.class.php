@@ -87,6 +87,7 @@ class bannerImage {
         // Set vars if server is offline
         if($this->svVars[5] != "Online") {
             $this->svVars[4] = 0; // Set players to 0
+            $this->svVars[5] = "Offline";
             debug("Server is offline. Set svPlayers to 0");
         }
 
@@ -95,7 +96,7 @@ class bannerImage {
     }
 
     function processBanner() {
-        $this->bannerFont("white");
+        $this->bannerFont('white');
 
         // Now all the font settings are configured, draw text, chart and map image
         $this->drawText();
@@ -110,10 +111,6 @@ class bannerImage {
         // Init vars
         debug("Font: " . $this->masterFont);
         debug("Font size: " . $this->masterFontSize);
-
-        //Set the color
-        debug("Allocating color " . $color);
-        $this->allocateColor($color);
 
         // Set master color
         debug("Setting masterColor to " . $color);
@@ -216,7 +213,7 @@ class bannerImage {
          *    imagettftext(image, font size, angle, x, y, font color, font file, text);
          */
         debug("Drawing text... ");
-        $color = $this->allocateColor($this->masterColor);
+        $color = $this->masterColor;
         $statusColor = $this->allocateColor(SERVER_ONLINE_COLOR);
         imagettftext($this->bannerImage, $this->masterFontSize, 0, 116, 28, $color, $this->masterFont, $this->svVars[0]);
         imagettftext($this->bannerImage, $this->masterFontSize, 0, 115, 58, $color, $this->masterFont, $this->svVars[1]);
