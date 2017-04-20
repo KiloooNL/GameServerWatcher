@@ -16,7 +16,7 @@
 #           TODO: in the config file.
 #   : FTP
 ########################################
-define("GLOBAL_IP", "127.0.0.1");
+define("GLOBAL_IP", "119.252.189.28");
 
 ########################################
 # Database settings
@@ -43,11 +43,13 @@ define("CONFIG_DIR","/config");
 # Error logging & debugging info
 #   : DEBUG_ENABLED: Enables debugging. 0 = Off, 1 = On
 #   : ERROR_LOGGING_ENABLED: Enables error logging. 0 = Off, 1 = On
+#   : DEBUG_ECHO: Enables 'echo' of certain variables (eg echo $svHostname). 0 = Off, 1 = On
 ########################################
 require_once(ROOT_DIR . "/code/error.php");
 
 define('DEBUG_ENABLED', 1);
 define('ERROR_LOGGING_ENABLED', 1);
+define('DEBUG_ECHO', 1);
 
 ########################################
 # Style settings
