@@ -46,13 +46,18 @@ class bannerImage {
     function createBanner() {
         if(file_exists(ROOT_DIR . "/images/banner/css/css_banner.png")) {
             debug("Using banner image: " . ROOT_DIR . "/images/banner/css/css_banner.png");
-            $this->bannerImage = imagecreatefrompng(ROOT_DIR."/images/banner/css/css_banner.png");
+            $this->bannerImage = imagecreatefrompng(ROOT_DIR . "/images/banner/css/css_banner.png");
         } else {
             debug("No banner image found!");
         }
 
         if(isset($_GET['svName'])) {
             $this->svName = $_GET['svName'];
+
+            // If the server name exceeds 48 chars, limit the string length to 48 so it fits nicely.
+            if(strlen($this->svName) > 48) {
+                $this->svName = substr($this->svName, 0, 48) . "...";
+            }
         }
         if(isset($_GET['svAddress'])) {
             $this->svIP = $_GET['svAddress'];
@@ -72,7 +77,6 @@ class bannerImage {
         if(isset($_GET['svRank'])) {
             $this->svRank = $_GET['svRank'];
         }
-
         $this->svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
 
         // Replace '' in each array item, and show each svVar if debugging enabled
