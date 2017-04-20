@@ -11,8 +11,6 @@ header("Content-type: image/png");
  *
  * This PHP class file is the classes for banner generation
  */
-//if(!DEBUG_ENABLED) {
-//}
 require_once("../../config/config.php");
 require_once("img.config.php");
 
@@ -44,9 +42,11 @@ class bannerImage {
      *  - Set variables, get all parsed $_GET strings, then process the banner
      */
     function createBanner() {
-        if(file_exists(ROOT_DIR . "/images/banner/css/css_banner.png")) {
-            debug("Using banner image: " . ROOT_DIR . "/images/banner/css/css_banner.png");
-            $this->bannerImage = imagecreatefrompng(ROOT_DIR . "/images/banner/css/css_banner.png");
+        $this->bannerImage = ROOT_DIR . "/images/banner/css/css_banner.png";
+
+        if(file_exists($this->bannerImage)) {
+            debug("Using banner image: " . $this->bannerImage);
+            $this->bannerImage = imagecreatefrompng($this->bannerImage);
         } else {
             debug("No banner image found!");
         }
@@ -182,7 +182,7 @@ class bannerImage {
         $this->drawShadow(274, 87, 3);
         $this->drawShadow(147, 87, 4);
         $this->drawShadow(275, 57, 5);
-        $this->drawShadow(212, 87, 6);
+        $this->drawShadow(221, 87, 6);
 
         // Top
         $this->drawShadow(117, 27, 0);
@@ -200,7 +200,7 @@ class bannerImage {
         $this->drawShadow(274, 89, 3);
         $this->drawShadow(147, 89, 4);
         $this->drawShadow(275, 59, 5);
-        $this->drawShadow(212, 89, 6);
+        $this->drawShadow(221, 89, 6);
 
         // Right
         $this->drawShadow(117, 29, 0);
