@@ -1,4 +1,5 @@
 <?php
+//header("Content-type: image/png");
 /**
  * GAMESERVERWATCHER
  * 	coded by Ben Weidenhofer
@@ -10,10 +11,9 @@
  *
  * This PHP class file is the classes for banner generation
  */
+//if(!DEBUG_ENABLED) {
+//}
 require_once("../../config/config.php");
-if(!DEBUG_ENABLED) {
-    header("Content-type: image/png");
-}
 
 class bannerImage {
     var $red = 0;
@@ -47,12 +47,44 @@ class bannerImage {
      */
     function createBanner($svHostname, $svPort, $svStatus) {
         $this->bannerImage = imagecreatefrompng(ROOT_DIR."/images/banner/css/css_banner.png");
+
+        if(isset($_GET['svName'])) {
+            $this->svName = $_GET['svName'];
+        }
+        if(isset($_GET['svAddress'])) {
+            $this->svIP = $_GET['svAddress'];
+        }
+        if(isset($_GET['svPort'])) {
+            $this->svPort = $_GET['svPort'];
+        }
+        if(isset($_GET['svMap'])) {
+            $this->svMap = $_GET['svMap'];
+        }
+        if(isset($_GET['svPlayers'])) {
+            $this->svPlayers = $_GET['svPlayers'];
+        }
+        if(isset($_GET['svStatus'])) {
+            $this->svStatus = $_GET['svStatus'];
+        }
+        if(isset($_GET['svRank'])) {
+            $this->svRank = $_GET['svRank'];
+        }
+
         debug("Banner image is: " . $this->bannerImage);
-        $svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
+        $this->svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
+
+        // Replace '' in each array item, and show each svVar if debugging enabled
+        for($i = 0; $i < count($this->svVars); $i++) {
+            if(DEBUG_ENABLED) {
+                debug($this->svVars[$i]);
+            }
+
+            $this->svVars[$i] = str_replace("'", "", $this->svVars[$i]);
+        }
 
         // Set vars if server is offline
         if($svStatus != "Online") {
-            $svPlayers = '';
+            $this->svVars[4] = 0;
             debug("Server is offline.");
         }
 
@@ -75,13 +107,13 @@ class bannerImage {
         $this->masterFontSize = $size;
 
         // Set the color
+        debug("Allocating color " . $color);
         $this->allocateColor($color);
 
         // Set master color
-        debug("Setting masterColor to: " . $color);
+        debug("Setting masterColor to " . $color);
         $this->masterColor = $color;
-
-
+        
         if(!isset($this->masterShadowColor)) {
             debug("Setting masterShadow color to black.");
             $this->masterShadowColor = imagecolorallocate($this->bannerImage, 0, 0, 0);
@@ -215,8 +247,10 @@ class bannerImage {
     function playerChart() {
         // Get the number of players, and use the pie image for X amount of current players
         if(!isset($this->svVars[4])) {
+            debug("Found no active players, using 0.png for playerChart.");
             $playerChart = imagecreatefrompng(ROOT_DIR . "/images/player_chart/0.png");
         } else {
+            debug("Found active players, using " . $this->svVars[4] . ".png for playerChart");
             $playerChart = imagecreatefrompng(ROOT_DIR . "/images/player_chart/" . $this->svVars[4] . ".png");
         }
 
@@ -236,8 +270,13 @@ class bannerImage {
 
         // Check if current server map exists in image folder
         // TODO: CHANGE THIS SO EACH FOLDER IS INDEPENDENT TO THE SERVER GAME!
+        debug("Searching for map image...");
         if(file_exists(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png")) {
+            debug("Map image found, using " . ROOT_DIR . "/images/mapimg/valve" . $this->svVars[3] . "png");
             $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png");
+        } else {
+            debug("No map image found. Run img_grabber in " . ROOT_DIR . "/code/config/ to try and grab missing maps");
+            debug("Because no map image was found, we will use NoImage.png instead");
         }
 
         // X, Y positioning
@@ -267,6 +306,6 @@ class bannerImage {
 }
 
 $myBanner = new bannerImage();
-$serverIP = $_GET['svIP'];
-$serverPort = $_GET['svPort'];
-$myBanner->createBanner($serverIP, $serverPort, "Online");
+if(isset($_GET['svAddress']) && isset($_GET['svPort'])) {
+}
+$myBanner->createBanner($_GET['svAddress'], $_GET['svPort'], "Online");
