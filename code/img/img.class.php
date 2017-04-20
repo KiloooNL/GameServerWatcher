@@ -45,7 +45,7 @@ class bannerImage {
      *  0, 0, 0       = Black
      *  255, 255, 255 = White
      */
-    function createBanner($svHostname, $svPort, $svStatus) {
+    function createBanner() {
         $this->bannerImage = imagecreatefrompng(ROOT_DIR."/images/banner/css/css_banner.png");
 
         if(isset($_GET['svName'])) {
@@ -53,6 +53,7 @@ class bannerImage {
         }
         if(isset($_GET['svAddress'])) {
             $this->svIP = $_GET['svAddress'];
+            $svHostname = $this->svIP;
         }
         if(isset($_GET['svPort'])) {
             $this->svPort = $_GET['svPort'];
@@ -83,12 +84,13 @@ class bannerImage {
         }
 
         // Set vars if server is offline
-        if($svStatus != "Online") {
+        if($this->svVars[6] != "Online") {
             $this->svVars[4] = 0;
             debug("Server is offline.");
         }
 
         // Process banner
+
         $this->processBanner();
     }
 
@@ -113,7 +115,7 @@ class bannerImage {
         // Set master color
         debug("Setting masterColor to " . $color);
         $this->masterColor = $color;
-        
+
         if(!isset($this->masterShadowColor)) {
             debug("Setting masterShadow color to black.");
             $this->masterShadowColor = imagecolorallocate($this->bannerImage, 0, 0, 0);
@@ -306,6 +308,4 @@ class bannerImage {
 }
 
 $myBanner = new bannerImage();
-if(isset($_GET['svAddress']) && isset($_GET['svPort'])) {
-}
-$myBanner->createBanner($_GET['svAddress'], $_GET['svPort'], "Online");
+$myBanner->createBanner();
