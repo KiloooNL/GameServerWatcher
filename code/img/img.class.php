@@ -266,7 +266,13 @@ class bannerImage {
             $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png");
         } else {
             debug("No map image found for '" . ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png'. \nRun img_grabber in " . ROOT_DIR . "/code/config/ to try and grab missing maps");
-            debug("Because no map image was found, we will use NoImage.png instead");
+            debug("Trying to find an image from gametracker.com...");
+            if(file_exists("http://image.www.gametracker.com/images/maps/160x120/css/" . $this->svVars[3] . ".png")) {
+                $this->mapImage = imagecreatefrompng("http://image.www.gametracker.com/images/maps/160x120/css/" . $this->svVars[3] . ".png");
+            } else {
+                debug("No map image found on gametracker.com... because no map image was found, we will use NoImage.png instead");
+            }
+
         }
 
         // X, Y positioning
