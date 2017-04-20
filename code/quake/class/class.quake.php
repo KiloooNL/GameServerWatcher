@@ -14,7 +14,8 @@
  *
  * For a full list of supported servers, see /class/class.quake3.cfg.php
  */
-
+require_once("../../../config/config.php");
+require_once("class.quake.cfg.php");
 class serverStatus {
     var $quake3_games;      // contains the $quake3_games array from class.quake3.cfg.php
     var $quake3_strings;    // contains the $quake3_string array from class.quake3.cfg.php
@@ -36,8 +37,6 @@ class serverStatus {
 
     // Load the config
     function serverStatus() {
-        require_once("../../../config/config.php");
-
         $this->quake3_games = $quake3_games;
         $this->quake3_strings = $quake3_strings;
         $this->aux = new Aux;
