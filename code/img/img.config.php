@@ -16,6 +16,6 @@
  *  - FONT_STYLE = path to font file
  *  - FONT_SIZE  = the font's size
  */
-define('FONT_STYLE', 'trebucbd.TTF');
+define('FONT_STYLE', ROOT_DIR . '/display/trebucbd.ttf');
 define('FONT_SIZE', 9);
 
