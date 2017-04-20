@@ -55,11 +55,13 @@ define('DEBUG_ECHO', 0);
 
 ########################################
 # Style settings
-#   : SERVER_OFFLINE_COLOR: Default color for "Server Offline" text. (Red)
-#   : SERVER_ONLINE_COLOR:  Default color for "Server Online" text. (Green)
+#   : SERVER_OFFLINE_COLOR:   Default color for "Server Offline" text. (Red)
+#   : SERVER_ONLINE_COLOR:    Default color for "Server Online" text. (Green)
+#   : USE_EXTERNAL_MAP_IMAGE: If a map image doesn't exist in /mapimg/ should we search for one using gametracker.com? 0 = Off, 1 = On
 ########################################
 define('SERVER_OFFLINE_COLOR', 'RED');
 define('SERVER_ONLINE_COLOR', 'GREEN');
+define('USE_EXTERNAL_MAP_IMAGE', 1);
 
 /************************************************
  *  WARNING!
