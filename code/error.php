@@ -39,20 +39,12 @@ register_shutdown_function(function() {
     $error = error_get_last();
 
     if ($error['type'] === E_ERROR && strpos($error['message'], 'Maximum execution time of') === 0) {
-        /**
-         * TODO: Make this much neater.
-         */
-        $ip = "IP";
-        $port = "port";
-
-        if(isset($serverIP)) {
+        if(isset($serverIP) && isset($serverPort)) {
             $ip = "IP of '$serverIP' ";
+            $port = "port of '$serverPort'";
+            echo "The server did not respond. Please check if the server is online, and that the $ip & $port specified are correct.";
+        } else {
+            echo "No server IP or port was specified, please check the settings.";
         }
-
-        if(isset($serverPort)) {
-            $port = "port of '$port'";
-        }
-
-        echo "The server did not respond. Please check if the server is online, and that the $ip & $port specified are correct.";
     }
 });
