@@ -1,5 +1,5 @@
 <?php
-//header("Content-type: image/png");
+header("Content-type: image/png");
 /**
  * GAMESERVERWATCHER
  * 	coded by Ben Weidenhofer
@@ -14,6 +14,7 @@
 //if(!DEBUG_ENABLED) {
 //}
 require_once("../../config/config.php");
+require_once("img.config.php");
 
 class bannerImage {
     var $red = 0;
@@ -24,8 +25,8 @@ class bannerImage {
     var $mapSX;
     var $mapSY;
 
-    var $masterFont;
-    var $masterFontSize;
+    var $masterFont = FONT_STYLE;
+    var $masterFontSize = FONT_SIZE;
     var $masterColor;
     var $masterShadowColor;
 
@@ -39,21 +40,22 @@ class bannerImage {
     var $svRank;
 
     /**
-     * Font colors
-     *
-     *  0, 0, 60      = Dark blue
-     *  0, 0, 0       = Black
-     *  255, 255, 255 = White
+     * createBanner
+     *  - Set variables, get all parsed $_GET strings, then process the banner
      */
     function createBanner() {
-        $this->bannerImage = imagecreatefrompng(ROOT_DIR."/images/banner/css/css_banner.png");
+        if(file_exists(ROOT_DIR . "/images/banner/css/css_banner.png")) {
+            debug("Using banner image: " . ROOT_DIR . "/images/banner/css/css_banner.png");
+            $this->bannerImage = imagecreatefrompng(ROOT_DIR."/images/banner/css/css_banner.png");
+        } else {
+            debug("No banner image found!");
+        }
 
         if(isset($_GET['svName'])) {
             $this->svName = $_GET['svName'];
         }
         if(isset($_GET['svAddress'])) {
             $this->svIP = $_GET['svAddress'];
-            $svHostname = $this->svIP;
         }
         if(isset($_GET['svPort'])) {
             $this->svPort = $_GET['svPort'];
@@ -71,12 +73,11 @@ class bannerImage {
             $this->svRank = $_GET['svRank'];
         }
 
-        debug("Banner image is: " . $this->bannerImage);
         $this->svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
 
         // Replace '' in each array item, and show each svVar if debugging enabled
         for($i = 0; $i < count($this->svVars); $i++) {
-            if(DEBUG_ENABLED) {
+            if(DEBUG_ENABLED && isset($this->svVars[$i])) {
                 debug($this->svVars[$i]);
             }
 
@@ -84,51 +85,46 @@ class bannerImage {
         }
 
         // Set vars if server is offline
-        if($this->svVars[6] != "Online") {
-            $this->svVars[4] = 0;
-            debug("Server is offline.");
+        if($this->svVars[5] != "Online") {
+            $this->svVars[4] = 0; // Set players to 0
+            debug("Server is offline. Set svPlayers to 0");
         }
 
         // Process banner
-
         $this->processBanner();
     }
 
     function processBanner() {
         $this->bannerFont("white");
-    }
-
-    function bannerFont($color) {
-        // Init vars
-        $font = ROOT_DIR . "/display/trebuc.ttf";
-        debug("Font: " . $font);
-        $this->masterFont = $font;
-
-        $size = 9;
-        debug("Font size: " . $size);
-        $this->masterFontSize = $size;
-
-        // Set the color
-        debug("Allocating color " . $color);
-        $this->allocateColor($color);
-
-        // Set master color
-        debug("Setting masterColor to " . $color);
-        $this->masterColor = $color;
-
-        if(!isset($this->masterShadowColor)) {
-            debug("Setting masterShadow color to black.");
-            $this->masterShadowColor = imagecolorallocate($this->bannerImage, 0, 0, 0);
-        }
 
         // Now all the font settings are configured, draw text, chart and map image
         $this->drawText();
         $this->playerChart();
         $this->drawMap();
+
+        // Kaboom! Destroy it!
+        $this->destroyBanner($this->bannerImage);
+    }
+
+    function bannerFont($color) {
+        // Init vars
+        debug("Font: " . $this->masterFont);
+        debug("Font size: " . $this->masterFontSize);
+
+        //Set the color
+        debug("Allocating color " . $color);
+        $this->allocateColor($color);
+
+        // Set master color
+        debug("Setting masterColor to " . $color);
+        $this->masterColor = $this->allocateColor($color);
+
+        debug("Setting masterShadowColor to black.");
+        $this->masterShadowColor = $this->allocateColor('black');
     }
 
     function allocateColor($color) {
-        $red = $green = $blue = 0;
+        $this->red = $this->green = $this->blue = 0;
 
         switch(strtolower($color)) {
             case 'white':
@@ -146,18 +142,20 @@ class bannerImage {
             case 'black':
                 $this->red = $this->green = $this->blue = 0;
                 break;
+            case 'grey':
+                $this-> red = $this->green = $this->blue = 128;
         }
 
         // Allocate the color
-        if(isset($red) && isset($blue) && isset($green)) {
+        if(isset($this->red) && isset($this->blue) && isset($this->green)) {
             debug("Allocating colors...");
-            $allocateColor = imagecolorallocate($this->bannerImage, $red, $green, $blue);
+            $allocateColor = imagecolorallocate($this->bannerImage, $this->red, $this->green, $this->blue);
         } else {
             debug("No color allocated! Using default color 255, 255, 255 (White)");
             $allocateColor = imagecolorallocate($this->bannerImage, 255, 255, 255);
         }
 
-        debug("Allocated colors ($red, $green, $blue) to $this->bannerImage.");
+        debug("Allocated colors ($this->red, $this->green, $this->blue) to $this->bannerImage.");
         return $allocateColor;
     }
 
@@ -165,30 +163,17 @@ class bannerImage {
      * Draw the shadow around text.
      */
     function drawShadow($x, $y, $i) {
-        $svVars = $this->svVars;
-        $fontSize = $this->masterFontSize;
-        $font = $this->masterFont;
-        $shadowColor = $this->masterShadowColor;
-        $image = $this->bannerImage;
-
-        debug("Drawing shadows... ");
-        imagettftext($image, $fontSize, 0, $x, $y, $shadowColor, $font, $svVars[$i]);
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, $x, $y, $this->masterShadowColor, $this->masterFont, $this->svVars[$i]);
     }
 
     /**
      * Draw the text
      */
     function drawText() {
-        $svVars = $this->svVars;
-        $fontSize = $this->masterFontSize;
-        $font = $this->masterFont;
-        $image = $this->bannerImage;
-        $color = $this->allocateColor($this->masterColor);
-        $statusColor = $this->allocateColor(SERVER_ONLINE_COLOR);
-
         /***
          * First, we draw the shadows for each array item
          */
+        debug("Drawing shadows... ");
         // Left
         $this->drawShadow(115, 27, 0);
         $this->drawShadow(114, 57, 1);
@@ -231,13 +216,15 @@ class bannerImage {
          *    imagettftext(image, font size, angle, x, y, font color, font file, text);
          */
         debug("Drawing text... ");
-        imagettftext($image, $fontSize, 0, 116, 28, $color, $font, $svVars[0]);
-        imagettftext($image, $fontSize, 0, 115, 58, $color, $font, $svVars[1]);
-        imagettftext($image, $fontSize, 0, 221, 58, $color, $font, $svVars[2]);
-        imagettftext($image, $fontSize, 0, 275, 88, $color, $font, $svVars[3]);
-        imagettftext($image, $fontSize, 0, 148, 88, $color, $font, $svVars[4]);
-        imagettftext($image, $fontSize, 0, 276, 58, $statusColor, $font, $svVars[5]);
-        imagettftext($image, $fontSize, 0, 222, 88, $color, $font, $svVars[6]);
+        $color = $this->allocateColor($this->masterColor);
+        $statusColor = $this->allocateColor(SERVER_ONLINE_COLOR);
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 116, 28, $color, $this->masterFont, $this->svVars[0]);
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 115, 58, $color, $this->masterFont, $this->svVars[1]);
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 221, 58, $color, $this->masterFont, $this->svVars[2]);
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 275, 88, $color, $this->masterFont, $this->svVars[3]);
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 148, 88, $color, $this->masterFont, $this->svVars[4]);
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 276, 58, $statusColor, $this->masterFont, $this->svVars[5]);
+        imagettftext($this->bannerImage, $this->masterFontSize, 0, 222, 88, $color, $this->masterFont, $this->svVars[6]);
     }
 
     /**
@@ -272,12 +259,12 @@ class bannerImage {
 
         // Check if current server map exists in image folder
         // TODO: CHANGE THIS SO EACH FOLDER IS INDEPENDENT TO THE SERVER GAME!
-        debug("Searching for map image...");
-        if(file_exists(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png")) {
-            debug("Map image found, using " . ROOT_DIR . "/images/mapimg/valve" . $this->svVars[3] . "png");
-            $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/valve/" . $this->svVars[3] . ".png");
+        debug("Searching for " . $this->svVars[3] . " map image...");
+        if(file_exists(ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png")) {
+            debug("Map image found, using " . ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png");
+            $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png");
         } else {
-            debug("No map image found. Run img_grabber in " . ROOT_DIR . "/code/config/ to try and grab missing maps");
+            debug("No map image found for '" . ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png'. \nRun img_grabber in " . ROOT_DIR . "/code/config/ to try and grab missing maps");
             debug("Because no map image was found, we will use NoImage.png instead");
         }
 
@@ -293,9 +280,6 @@ class bannerImage {
         // Draw it!
         debug("Drawing map using image (" . $this->mapImage . ")... ");
         imagecopy($this->bannerImage, $this->mapImage, imagesx($this->bannerImage) - $this->mapSX - $mapRight, imagesy($this->bannerImage) - $this->mapSY - $mapBottom, 0, 0, imagesx($this->mapImage), imagesy($this->mapImage));
-
-        // Kaboom! Destroy it!
-        $this->destroyBanner($this->bannerImage);
     }
 
     function destroyBanner($image) {
@@ -306,6 +290,5 @@ class bannerImage {
         imagedestroy($image);
     }
 }
-
 $myBanner = new bannerImage();
 $myBanner->createBanner();
