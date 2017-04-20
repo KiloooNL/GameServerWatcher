@@ -12,28 +12,9 @@
  *
  */
 
-
-/** TODO:
- * For now, these variables are changed in this file.
- * in the future, it should be changed so that they are accessed and edited via /config/config.php
- *
- *
- */
-
-$serverIP = "213.238.173.151";
-$serverPort = 27015;    // SRCDS Default Port is: 27015.
-
-// TODO: Maybe remove this later and add if(is_resource) to the goldSrcQuery class
-$fp = fsockopen("udp://".$serverIP, $serverPort, $errstr, $errno, 5);
-
-if(is_resource($fp)) {
-    stream_set_timeout($fp, 5);
-    $serverStatus = "Online";
-} else {
-    $serverStatus = "Offline";
-}
-
 require_once("../../config/config.php");
+$serverIP = "89.40.233.254";
+$serverPort = 27015;    // SRCDS Default Port is: 27015.
 
 /******
  * microtime_float()
@@ -87,9 +68,14 @@ class goldSrcQuery {
             ."\x6c\x61\x73\x2e\x65\x64\x75\x20\x20\x20\x2d\x2d\x3e\x0a\x3c\x21\x2d\x2d\x20\x68\x74\x74\x70\x3a\x2f\x2f\x77\x77\x77"
             ."\x2e\x75\x74\x64\x61\x6c\x6c\x61\x73\x2e\x65\x64\x75\x2f\x7e\x6d\x61\x64\x63\x6f\x64\x65\x72\x20\x2d\x2d\x3e\x0a\x0a";
         $this->_arr = array_pad($this->_arr, 21, 0);
-        $this->_socket = fsockopen("udp://" . $this->_ip, $this->_port, $errno, $errstr, 3);
-        socket_set_timeout($this->_socket, 5, 0);
 
+        $this->_socket = fsockopen("udp://" . $this->_ip, $this->_port, $errno, $errstr, 5);
+        if(is_resource($this->_socket)) {
+            debug("Successfully connected to " . $this->_ip . ":" . $this->_port);
+            stream_set_timeout($this->_socket, 5);
+        } else {
+            debug("Could not connect to " . $this->_socket . ":" . $this->_port);
+        }
         if($tmp = $this->_sockState()) {
             // echo $tmp;
             if(!$this->_socket) {
@@ -151,12 +137,6 @@ class goldSrcQuery {
         } else {
             $this->_send("ÿÿÿÿdetails".chr(0));
             $buffer = $this->_getMore();
-            /**
-             *  echo $buffer;
-             *  for($i = 0; $i < strlen($buffer); i++) {
-             *      echo '[' . ord(substr($buffer, $i)) . ']';
-             *  } exit;
-             */
 
             $tmp = substr($buffer, 0, 5);
             $buffer = substr($buffer, 5);
@@ -531,31 +511,40 @@ $svRules      = $gameServer->Rules();
 /**
  * NOTE: The commands below are for debugging purposes,
  * or for displaying further info on the page if needed.
- * Change DEBUG_ENABLED to '1' in config.php to enable site-wide debugging.
+ * Change DEBUG_ECHO to '1' in config.php to enable site-wide debugging.
  */
-if(DEBUG_ENABLED) {
+if(DEBUG_ECHO) {
     debug("Gathering server data...");
-    echo "Server IP: "                  . $svAddress . "<br/>"; // IP Address
-    echo "Server Hostname: "            . $svHostName . "<br/>"; // Hostname / Port
-    echo "Current map: "                . $svMap . "<br/>"; // Current map
-    echo "Server mod: "                 . $svModName . "<br/>"; // Server mod
-    echo "Server description: "         . $svDesc . "<br/>"; // Server description
-    echo "Current players: "            . $svPlayers . "<br/>"; // Current players
-    echo "Max players: "                . $svMax . "<br/>"; // Max players
-    echo "Protocol: "                   . $svProtocol . "<br/>"; // Protocol
-    echo "Server type: "                . $svSvrType . "<br/>"; // Server Type
-    echo "Server OS: "                  . $svSvrOS . "<br/>"; // Server OS
-    echo "Server requires a password: " . $svPass . "<br/>"; // Server Password
-    echo "Server running a mod: "       . $svIsMod . "<br/>"; // Server is running mod?
-    echo "Mod HTTP: "                   . $svModHTTP . "<br/>"; // Mod website
-    echo "Mod FTP: "                    . $svModFTP . "<br/>"; // Mod FTP
-    echo "Server version: "             . $svSvrVer . "<br/>"; // Server version
-    echo "Server size: "                . $svSvrSize . "<br/>"; // Server size
-    echo "Server only: "                . $svSvrOnly . "<br/>"; // Server only
-    echo "Server VAC Secure: "          . $svSecure . "<br/>"; // VAC Secure?
-    echo "Server ping: "                . $svPing . "<br/>"; // Server ping
+
+    $serverCon = $gameServer->isUp();
+    if($serverCon == 0) {
+        debug("No server response!");
+    } else if($serverCon == -1) {
+        debug("Error in socket.");
+    } else if($serverCon == 1) {
+        debug("Server is up.");
+    }
+    echo "Server IP: "                  . $svAddress    . "<br/>"; // IP Address
+    echo "Server Hostname: "            . $svHostName   . "<br/>"; // Hostname / Port
+    echo "Current map: "                . $svMap        . "<br/>"; // Current map
+    echo "Server mod: "                 . $svModName    . "<br/>"; // Server mod
+    echo "Server description: "         . $svDesc       . "<br/>"; // Server description
+    echo "Current players: "            . $svPlayers    . "<br/>"; // Current players
+    echo "Max players: "                . $svMax        . "<br/>"; // Max players
+    echo "Protocol: "                   . $svProtocol   . "<br/>"; // Protocol
+    echo "Server type: "                . $svSvrType    . "<br/>"; // Server Type
+    echo "Server OS: "                  . $svSvrOS      . "<br/>"; // Server OS
+    echo "Server requires a password: " . $svPass       . "<br/>"; // Server Password
+    echo "Server running a mod: "       . $svIsMod      . "<br/>"; // Server is running mod?
+    echo "Mod HTTP: "                   . $svModHTTP    . "<br/>"; // Mod website
+    echo "Mod FTP: "                    . $svModFTP     . "<br/>"; // Mod FTP
+    echo "Server version: "             . $svSvrVer     . "<br/>"; // Server version
+    echo "Server size: "                . $svSvrSize    . "<br/>"; // Server size
+    echo "Server only: "                . $svSvrOnly    . "<br/>"; // Server only
+    echo "Server VAC Secure: "          . $svSecure     . "<br/>"; // VAC Secure?
+    echo "Server ping: "                . $svPing       . "<br/>"; // Server ping
     echo "Server player data: "         . print_r($svPlayerData, true) . "<br/>"; // Player data
-    echo "Server rules: "               . print_r($svRules, true) . "<br/>"; // Rules
+    echo "Server rules: "               . print_r($svRules, true)      . "<br/>"; // Rules
 }
 ?>
 <img src="../img/img.class.php?svName='<?php echo $svHostName;?>'&svAddress='<?php echo $svAddress; ?>'&svPort='<?php echo $serverPort; ?>'&svStatus='<?php echo $serverStatus; ?>'&svPlayers='<?php echo $svPlayers;?>'&svMax='<?php echo $svMax; ?>'&svRank='1st'&svMap='<?php echo $svMap;?>'" class="border" width="560" height="95" align="middle" />
