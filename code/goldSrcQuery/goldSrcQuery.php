@@ -533,7 +533,7 @@ $svRules      = $gameServer->Rules();
  * or for displaying further info on the page if needed.
  * Change DEBUG_ENABLED to '1' in config.php to enable site-wide debugging.
  */
-if(DEBUG_ENABLED == 1) {
+if(DEBUG_ENABLED) {
     debug("Gathering server data...");
     echo "Server IP: " . $svAddress . "<br/>"; // IP Address
     echo "Server Hostname: " . $svHostName . "<br/>"; // Hostname / Port
