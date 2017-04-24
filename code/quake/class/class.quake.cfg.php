@@ -114,4 +114,3 @@ $quake3_string = array(
   'u2xmp'     =>  "\x7E\x00\x00\x00\x00/\x7E\x00\x00\x00\x01/\x7E\x00\x00\x00\x02",
   'mta'       =>  "s"
 );
-?>
