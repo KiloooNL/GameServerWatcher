@@ -13,7 +13,7 @@
  */
 
 require_once("../../config/config.php");
-$serverIP = "89.40.233.254";
+$serverIP = "213.238.173.151";
 $serverPort = 27015;    // SRCDS Default Port is: 27015.
 
 /******
@@ -117,15 +117,15 @@ class goldSrcQuery {
                 $end = microtime_float()*1000;
                 if($end < $start) {
                     echo $end . '\n' . $start;
-                    return ($end - $start); // ($end - $start >= 0 ? ($end - $start) : -1; // Will be numeric ping
-                } else {
-                    $this->setError(ERROR_NOSERVER);
-                    debug("[Error: No response from the server]");
-                    return -1; // Server unresponsive
                 }
+                return ($end - $start); // ($end - $start >= 0 ? ($end - $start) : -1; // Will be numeric ping
+            } else {
+                $this->setError(ERROR_NOSERVER);
+                debug("[Error: No response from the server]");
+                return -1; // Server unresponsive
             }
-            return 0;
         }
+        return 0;
     }
 
     // Populates details array
@@ -138,6 +138,15 @@ class goldSrcQuery {
         } else {
             $this->_send("ÿÿÿÿdetails".chr(0));
             $buffer = $this->_getMore();
+
+            /*** Useful to show each buffer, but not needed otherwise
+            if(DEBUG_ENABLED) {
+                debug($buffer);
+                for ($i=0; $i < strlen($buffer); $i++)  {
+                    debug('['.ord(substr($buffer,$i)).'] ');
+                }
+            }
+            */
 
             $tmp = substr($buffer, 0, 5);
             $buffer = substr($buffer, 5);
@@ -508,15 +517,27 @@ $svPing       = $gameServer->Ping();
 $svPlayerData = $gameServer->Players();
 $svRules      = $gameServer->Rules();
 
+if($svMax != 0) {
+    $svStatus = "Online";
+}
 /**
  * NOTE: The commands below are for debugging purposes,
  * or for displaying further info on the page if needed.
  * Change DEBUG_ECHO to '1' in config.php to enable site-wide debugging.
  */
+
+// No idea how this ended up working, so don't touch it.
+// Doesn't really make a whole lot of sense.
+// TODO: Probably review this.
+for($i = 0; $i < 0; $i++) {
+    $serverIP = $serverIP[$i++];
+}
+
 if(DEBUG_ECHO) {
     debug("Gathering server data...");
 
     $serverCon = $gameServer->isUp();
+
     if($serverCon == 0) {
         debug("No server response!");
     } else if($serverCon == -1) {
@@ -524,8 +545,8 @@ if(DEBUG_ECHO) {
     } else if($serverCon == 1) {
         debug("Server is up.");
     }
-    echo "Server IP: "                  . $svAddress    . "<br/>"; // IP Address
-    echo "Server Hostname: "            . $svHostName   . "<br/>"; // Hostname / Port
+    echo "Server Address: "             . $svAddress    . "<br/>"; // IP Address
+    echo "Server Hostname: "            . $svHostName   . "<br/>"; // Hostname
     echo "Current map: "                . $svMap        . "<br/>"; // Current map
     echo "Server mod: "                 . $svModName    . "<br/>"; // Server mod
     echo "Server description: "         . $svDesc       . "<br/>"; // Server description
@@ -542,9 +563,9 @@ if(DEBUG_ECHO) {
     echo "Server size: "                . $svSvrSize    . "<br/>"; // Server size
     echo "Server only: "                . $svSvrOnly    . "<br/>"; // Server only
     echo "Server VAC Secure: "          . $svSecure     . "<br/>"; // VAC Secure?
-    echo "Server ping: "                . $svPing       . "<br/>"; // Server ping
+    echo "Server ping (rounded): "      . round($svPing). "ms<br/>"; // Server ping
     echo "Server player data: "         . print_r($svPlayerData, true) . "<br/>"; // Player data
     echo "Server rules: "               . print_r($svRules, true)      . "<br/>"; // Rules
 }
 ?>
-<img src="../img/img.class.php?svName='<?php echo $svHostName;?>'&svAddress='<?php echo $svAddress; ?>'&svPort='<?php echo $serverPort; ?>'&svStatus='<?php echo $serverStatus; ?>'&svPlayers='<?php echo $svPlayers;?>'&svMax='<?php echo $svMax; ?>'&svRank='1st'&svMap='<?php echo $svMap;?>'" class="border" width="560" height="95" align="middle" />
+<img src="../img/img.class.php?svName='<?php echo $svHostName;?>'&svAddress='<?php echo $serverIP ?>'&svPort='<?php echo $serverPort; ?>'&svStatus='<?php echo $svStatus; ?>'&svPlayers='<?php echo $svPlayers;?>'&svMax='<?php echo $svMax; ?>'&svRank='1st'&svMap='<?php echo $svMap;?>'&svShortName=hl" class="border" width="560" height="95" align="middle" />
