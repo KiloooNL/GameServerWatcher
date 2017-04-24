@@ -60,6 +60,7 @@ class goldSrcQuery {
     function goldSrcQuery($serverIP, $serverPort) {
         $this->_ip = $serverIP;
         $this->_port = $serverPort;
+        debug($this->_seed);
         $this->_seed = "\x0a\x3c\x21\x2d\x2d\x20\x20\x20\x20\x20\x20\x20\x53\x65\x72\x76\x65\x72\x20\x6d\x61\x64\x51\x75\x65\x72\x79\x20\x43"
             ."\x6c\x61\x73\x73\x20\x20\x20\x20\x20\x20\x20\x2d\x2d\x3e\x0a\x3c\x21\x2d\x2d\x20\x20\x20\x20\x43\x6f\x70\x79\x72\x69"
             ."\x67\x68\x74\x20\x28\x43\x29\x20\x32\x30\x30\x32\x20\x6d\x61\x64\x43\x6f\x64\x65\x72\x20\x20\x20\x20\x2d\x2d\x3e\x0a"
@@ -68,9 +69,10 @@ class goldSrcQuery {
             ."\x2e\x75\x74\x64\x61\x6c\x6c\x61\x73\x2e\x65\x64\x75\x2f\x7e\x6d\x61\x64\x63\x6f\x64\x65\x72\x20\x2d\x2d\x3e\x0a\x0a";
         $this->_arr = array_pad($this->_arr, 21, 0);
 
-        $this->_socket = fsockopen("udp://" . $this->_ip, $this->_port, $errno, $errstr, 5);
+        $this->_socket = fsockopen("udp://" . $this->_ip, $this->_port, $errno, $errstr, 3);
+
         if(is_resource($this->_socket)) {
-            debug("Successfully connected to " . $this->_ip . ":" . $this->_port);
+            debug("Connecting to " . $this->_ip . ":" . $this->_port);
             stream_set_timeout($this->_socket, 5);
         } else {
             debug("Could not connect to " . $this->_socket . ":" . $this->_port);
@@ -78,7 +80,7 @@ class goldSrcQuery {
         if($tmp = $this->_sockState()) {
             // echo $tmp;
             if(!$this->_socket) {
-                echo "Error #" . $errno . ": " . $errstr;
+                debug("Error #$errno: $errstr");
                 // exit;
             }
 
@@ -90,7 +92,7 @@ class goldSrcQuery {
 
     // Set error code
     function setError($code) {
-        debug("[Setting error code (" . $code . ")]<br/>\n");
+        debug("[Setting error code (" . $code . ")]");
         $this->_errorcode = $code;
     }
 
@@ -192,14 +194,14 @@ class goldSrcQuery {
                 $buffer = substr($buffer, 4);
 
                 for($j = 0; $j < 4; $j++) {
-                    $this->_arr[$count++] += (pow(256, $j) * ord(substr($tmp, $j, 1))); // [15] Version
+                    $this->_arr[$count] += (pow(256, $j) * ord(substr($tmp, $j, 1))); // [15] Version
                 } $count++;
 
                 $tmp = substr($buffer, 0, 4);
                 $buffer = substr($buffer, 4);
 
                 for($j = 0; $j < 4; $j++) {
-                    $this->_arr[$count++] += (pow(256, $j) * ord(substr($tmp, $j, 1))); // [16] Size
+                    $this->_arr[$count] += (pow(256, $j) * ord(substr($tmp, $j, 1))); // [16] Size
                 } $count++;
 
                 // [17] Server only
@@ -416,7 +418,6 @@ class goldSrcQuery {
             ."\x3c\x21\x2d\x2d\x20\x20\x20\x6d\x61\x64\x63\x6f\x64\x65\x72\x40\x73\x74\x75\x64\x65\x6e\x74\x2e\x75\x74\x64\x61\x6c"
             ."\x6c\x61\x73\x2e\x65\x64\x75\x20\x20\x20\x2d\x2d\x3e\x0a\x3c\x21\x2d\x2d\x20\x68\x74\x74\x70\x3a\x2f\x2f\x77\x77\x77"
             ."\x2e\x75\x74\x64\x61\x6c\x6c\x61\x73\x2e\x65\x64\x75\x2f\x7e\x6d\x61\x64\x63\x6f\x64\x65\x72\x20\x2d\x2d\x3e\x0a\x0a";
-        // print($this->_seed);
     }
 
     // Return the current error code
