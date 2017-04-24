@@ -23,7 +23,6 @@ $serverPort = 27015;    // SRCDS Default Port is: 27015.
 function microtime_float() {
     list($usec, $sec) = explode(" ", microtime());
     return ((float)$usec + (float)$sec);
-    echo $sec;
 }
 
 function getFloat32($chars) {
