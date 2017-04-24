@@ -1,5 +1,4 @@
 <?php
-header("Content-type: image/png");
 /**
  * GAMESERVERWATCHER
  * 	coded by Ben Weidenhofer
@@ -13,6 +12,11 @@ header("Content-type: image/png");
  */
 require_once("../../config/config.php");
 require_once("img.config.php");
+
+// Disable header(content) when debugging is enabled for easier view of code
+if(!DEBUG_ENABLED) {
+    header("Content-type: image/png");
+}
 
 class bannerImage {
     var $red = 0;
@@ -28,6 +32,8 @@ class bannerImage {
     var $masterColor;
     var $masterShadowColor;
 
+    var $svShortName; // Short name for game type (eg Half-Life = hl)
+
     var $svVars;
     var $svName;
     var $svIP;
@@ -42,12 +48,16 @@ class bannerImage {
      *  - Set variables, get all parsed $_GET strings, then process the banner
      */
     function createBanner() {
-        $this->bannerImage = ROOT_DIR . "/images/banner/css/css_banner.png";
+        // Check svShortName var
+        $this->checkShortName();
+
+        $this->bannerImage = ROOT_DIR . "/images/banner/" . $this->svShortName . "/" . $this->svShortName . "_banner.png";
 
         if(file_exists($this->bannerImage)) {
             debug("Using banner image: " . $this->bannerImage);
             $this->bannerImage = imagecreatefrompng($this->bannerImage);
         } else {
+            debug("Tried to use banner image: " . $this->bannerImage);
             debug("No banner image found!");
         }
 
@@ -77,6 +87,8 @@ class bannerImage {
         if(isset($_GET['svRank'])) {
             $this->svRank = $_GET['svRank'];
         }
+
+
         $this->svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
 
         // Replace '' in each array item, and show each svVar if debugging enabled
@@ -89,9 +101,9 @@ class bannerImage {
         }
 
         // Set vars if server is offline
-        if($this->svVars[5] != "Online") {
+        // TODO: IMPLEMENT ONLINE CHECK
+        if($this->svVars[5] == "Offline") {
             $this->svVars[4] = 0; // Set players to 0
-            $this->svVars[5] = "Offline";
             debug("Server is offline. Set svPlayers to 0");
         }
 
@@ -255,24 +267,35 @@ class bannerImage {
         imagecopy($this->bannerImage, $playerChart, imagesx($this->bannerImage) - $sx - $margRight, imagesy($this->bannerImage) - $sy - $margBottom, 0, 0, imagesx($playerChart), imagesy($playerChart));
     }
 
+    function checkShortName() {
+        if(isset($_GET['svShortName'])) {
+            $this->svShortName = $_GET['svShortName'];
+            debug("svShortName = ". $_GET['svShortName']);
+        } else {
+            debug("svShortName was not defined, using 'hl' as default");
+            $this->svShortName = 'hl';
+        }
+    }
+
     function drawMap() {
         $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/NoImage.png");
 
+        $mapImgPath = ROOT_DIR . "/images/mapimg/" .  $this->svShortName . "/" . $this->svVars[3] . ".png";
         // Check if current server map exists in image folder
-        // TODO: CHANGE THIS SO EACH FOLDER IS INDEPENDENT TO THE SERVER GAME!
+        // $this->svVars[3] = svMap
+
         debug("Searching for " . $this->svVars[3] . " map image...");
-        if(file_exists(ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png")) {
-            debug("Map image found, using " . ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png");
-            $this->mapImage = imagecreatefrompng(ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png");
+        if(file_exists($mapImgPath)) {
+            debug("Map image found, using " . $mapImgPath);
+            $this->mapImage = imagecreatefrompng($mapImgPath);
         } else {
-            debug("No map image found for '" . ROOT_DIR . "/images/mapimg/cstrikesource/" . $this->svVars[3] . ".png'. \nRun img_grabber in " . ROOT_DIR . "/code/config/ to try and grab missing maps");
+            debug("No map image found for '" . $mapImgPath . ". \nRun img_grabber in " . ROOT_DIR . "/code/config/ to try and grab missing maps");
             debug("Trying to find an image from gametracker.com...");
-            if(USE_EXTERNAL_MAP_IMAGE && file_exists("http://image.www.gametracker.com/images/maps/160x120/css/" . $this->svVars[3] . ".png")) {
-                $this->mapImage = imagecreatefrompng("http://image.www.gametracker.com/images/maps/160x120/css/" . $this->svVars[3] . ".png");
+            if(USE_EXTERNAL_MAP_IMAGE && file_exists("http://image.www.gametracker.com/images/maps/160x120/" . $this->svShortName . $this->svVars[3] . ".png")) {
+                $this->mapImage = imagecreatefrompng("http://image.www.gametracker.com/images/maps/160x120/" . $this->svShortName . $this->svVars[3] . ".png");
             } else {
                 debug("No map image found on gametracker.com... because no map image was found, we will use NoImage.png instead");
             }
-
         }
 
         // X, Y positioning
