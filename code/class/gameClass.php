@@ -22,6 +22,18 @@
  *
  * findGameEngine("IP", "Port");
  */
-class gameClass {
 
+function gameNameShortToLong($shortName) {
+    strtolower($shortName);
+
+    switch($shortName) {
+        case 'hl':
+            return 'Half-Life';
+        case 'css':
+            return 'Counter-Strike: Source';
+        case 'q3':
+            return 'Quake 3';
+        default:
+            return 'No game server defined.';
+    }
 }
