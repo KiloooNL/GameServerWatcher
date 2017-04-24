@@ -18,4 +18,28 @@
 require_once("../../config/config.php");
 
 // Get all the scripts
-require_once(Q3_ROOT . "/class/class.quake.php");
+require_once("class/class.quake.php");
+require_once("config/quakeStrings.php");
+require_once("config/quake.config.php");
+
+$query = new serverStatus;
+
+$data = $query->getInfo($servers);
+$svStatus = '';
+
+// TODO: Clean this up, big time.
+// Go through all the servers
+foreach($servers as $serverID => $values) {
+    // If there are no error messages, print out the data for the server
+    if(!isset($query->errMsg[$serverID])) {
+        // Grab the array
+        $thisServer = $data[$serverID];
+        $svGameType = quakeGameType($thisServer['g_gametype']);
+        $svMap      = $thisServer['mapname'];
+        $svName     = $thisServer['sv_hostname'];
+        $svPlayers  = count($thisServer['players']);
+        $svMax      = $thisServer['sv_maxclients'];
+    } else {
+        $svStatus = 'Offline';
+    }
+}
