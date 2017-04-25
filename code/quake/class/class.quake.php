@@ -14,8 +14,9 @@
  *
  * For a full list of supported servers, see /class/class.quake3.cfg.php
  */
-require_once("../../../config/config.php");
-require_once("class.quake.cfg.php");
+
+require_once("../../config/config.php");
+
 class serverStatus {
     var $quake3_games;      // contains the $quake3_games array from class.quake3.cfg.php
     var $quake3_strings;    // contains the $quake3_string array from class.quake3.cfg.php
@@ -28,25 +29,32 @@ class serverStatus {
     var $svQueryType;       // server query type name
     var $svStrings;         // string(s) to send to the server
     var $svTimeout;         // time in ms to listen to incoming data, aka the "ping" for the server
+    var $svType;
     var $time;              // average communication time with the server
     var $ping;               // Ping!
-
-    var $errMsg;            // error messages
 
     var $aux;               // class with additional functions (class.aux.php)
 
     // Load the config
     function serverStatus() {
+        require_once("class.quake.cfg.php");
+
         $this->quake3_games = $quake3_games;
         $this->quake3_strings = $quake3_strings;
+
+        if(DEBUG_ENABLED) {
+            print_r($this->quake3_games);
+            print_r($this->quake3_strings);
+        }
+
         $this->aux = new Aux;
     }
 
     function getInfo($servers, $timeout = 200, $outputType = 'parsed') {
         $this->svTimeout = $timeout;
 
-        if(!is_array($server)) {
-            $this->error('input data is not an array', 0);
+        if(!is_array($servers)) {
+            debug('Input data is not an array');
         }
 
         // Process servers
@@ -67,7 +75,7 @@ class serverStatus {
                         $svOutput['strings'] = $strings;
                         break;
                     default:
-                        $this->error('wrong output type specified', 0);
+                        debug('Wrong output type specified');
                 }
             } else {
                 $svOutput = '';
@@ -79,7 +87,13 @@ class serverStatus {
             // Put data into output array
             $output[$this->svID] = $svOutput;
         }
-        return $output;
+
+        // TODO: broken?
+        if(isset($output)) {
+            return $output;
+        } else {
+            return;
+        }
     }
 
     // Get configuration data for the current server
@@ -90,11 +104,11 @@ class serverStatus {
 
         // Read server data
         if(!isset($server[0])) {
-            $this->error('server type not set', 0);
+            debug('Server type not set');
         }
 
         if(!isset($server[1])) {
-            $this->error('server address not set', 0);
+            debug('Server address not set', 0);
         }
 
         $this->type_id   = $server[0];
@@ -102,7 +116,7 @@ class serverStatus {
 
         // Check if type exists
         if(!isset($this->quake3_games[$this->type_id])) {
-            $this->error('server type ' . $this->type_id . ' does not exists in the config file.');
+            debug('Server type ' . $this->type_id . ' does not exists in the config file.');
             return false;
         }
 
@@ -130,7 +144,7 @@ class serverStatus {
     function communicate() {
         // Open connection to the server
         if(!($sock = @fsockopen('udp://' . $this->svAddress, $this->svQueryPort))) {
-            $this->error('could not connect to server');
+            debug('Could not connect to server');
             return false;
         }
         socket_set_timeout($sock, 0, 1000 * SOCK_TIMEOUT);
@@ -159,12 +173,11 @@ class serverStatus {
 
         // Rough ping
         $this->ping = $wait;
-        // Round ping
         // $wait = round($wait, 1);
 
         // Check if any data was returned
         if(empty($data[0])) {
-            $this->error('the server didn\'t return any data');
+            debug('The server didn\'t return any data');
             return false;
         }
         return $data;
@@ -175,11 +188,17 @@ class serverStatus {
         // Include the parse file
         $parse_file = Q3_INC_PATH.INC_PREFIX.$this->svQueryType.INC_POSTFIX;
         if(!is_readable(($parse_file))) {
-            $this->error('could not read file "' . $parse_file . '".', 0);
+            debug('Could not read file "' . $parse_file . '".', 0);
         }
 
-        require_once($parse_file);
-        return $output;
+        if(file_exists($parse_file)) {
+            require($parse_file);
+
+        } else {
+            debug('File ' . $parse_file . ' does not exist.', 0);
+        }
+        // return $output;
+        return $data;
     }
 
     // Adds some general server info to the output
@@ -193,16 +212,5 @@ class serverStatus {
 
         $data['custom'] = $custom;
         return $data;
-    }
-
-    // Error function
-    function error($msg, $type = 1) {
-        // Set message
-        $this->err_msg[$this->svID] = $msg;
-
-        if($type == 0) {
-            // Fatal error!
-            die('[Fatal error][' . $this->svID . '] ' . $msg);
-        }
     }
 }
