@@ -44,7 +44,7 @@ register_shutdown_function(function() {
             $port = "port of '$serverPort'";
             echo "The server did not respond. Please check if the server is online, and that the $ip & $port specified are correct.";
         } else {
-            echo "No server IP or port was specified, please check the settings.";
+            echo "The server did not respond, or no server IP or port was specified, please check the settings.";
         }
     }
 });
