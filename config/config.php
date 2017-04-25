@@ -41,7 +41,8 @@ define("CONFIG_DIR","/config");
 
 ########################################
 # Error logging & debugging info
-#   NOTE: If these options are enabled, banner images will NOT work.
+#   NOTE: If DEBUG_ENABLED is on, banner images will not work
+#         You can safely enable DEBUG_ECHO to get around this instead.
 #
 #   : DEBUG_ENABLED: Enables debugging. 0 = Off, 1 = On
 #   : ERROR_LOGGING_ENABLED: Enables error logging. 0 = Off, 1 = On
@@ -51,7 +52,7 @@ require_once(ROOT_DIR . "/code/error.php");
 
 define('DEBUG_ENABLED', 0);
 define('ERROR_LOGGING_ENABLED', 0);
-define('DEBUG_ECHO', 0);
+define('DEBUG_ECHO', 1);
 
 ########################################
 # Style settings
@@ -96,7 +97,7 @@ function pageLoadTime() {
 ###################################
 define('Q3_ROOT', ROOT_DIR . "/code/quake/");   // Quake 3 scripts root folder
 define('Q3_INC_PATH', Q3_ROOT . "inc/");        // Path to inc. files
-define('INC_PREFIX', 'inc');                    // Prefix for .inc files
+define('INC_PREFIX', 'inc.');                    // Prefix for .inc files
 define('INC_POSTFIX', '.php');                  // Postfix for .inc files
 define('SOCK_TIMEOUT', '10');                   // Socket timeout in ms - TODO: Make this a global config var for ALL game server queries
 
