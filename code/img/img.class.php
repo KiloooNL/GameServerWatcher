@@ -88,7 +88,6 @@ class bannerImage {
             $this->svRank = $_GET['svRank'];
         }
 
-
         $this->svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
 
         // Show each svVar if debugging enabled
@@ -250,6 +249,10 @@ class bannerImage {
             debug("Found no active players, using 0.png for playerChart.");
             $playerChart = imagecreatefrompng(ROOT_DIR . "/images/player_chart/0.png");
         } else {
+            // TODO: Fix this cap, make more player_chart images to support > 16 players
+            if($this->svVars[4] > 16) {
+                $this->svVars[4] = 16;
+            }
             debug("Found active players, using " . $this->svVars[4] . ".png for playerChart");
             $playerChart = imagecreatefrompng(ROOT_DIR . "/images/player_chart/" . $this->svVars[4] . ".png");
         }
