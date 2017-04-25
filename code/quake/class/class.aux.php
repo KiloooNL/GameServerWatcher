@@ -15,6 +15,9 @@
 * For a full list of supported servers, see this file
 */
 
+require_once("../../config/config.php");
+require_once("class.quake.php");
+
 class Aux {
     function spyString($string, $del = '\\', $start = 2) {
         // Cut string into pieces according to delimiter
