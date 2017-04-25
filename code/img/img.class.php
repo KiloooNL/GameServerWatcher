@@ -56,6 +56,10 @@ class bannerImage {
         if(file_exists($this->bannerImage)) {
             debug("Using banner image: " . $this->bannerImage);
             $this->bannerImage = imagecreatefrompng($this->bannerImage);
+
+            // Alpha blending
+            imagealphablending($this->bannerImage, true);
+            imagesavealpha($this->bannerImage, true);
         } else {
             debug("Tried to use banner image: " . $this->bannerImage);
             debug("No banner image found!");
@@ -316,9 +320,13 @@ class bannerImage {
     function destroyBanner($image) {
         // Save PNG image and free memory
         debug("Drawing PNG image...");
-        imagepng($image);
-        debug("Destroying PNG image...");
-        imagedestroy($image);
+        // imagepng(source, to, quality0-9, filters)
+        imagepng($image, NULL, 0);
+
+        if(is_resource($image)) {
+            debug("Destroying PNG image...");
+            imagedestroy($image);
+        }
     }
 }
 $myBanner = new bannerImage();
