@@ -91,13 +91,11 @@ class bannerImage {
 
         $this->svVars = array($this->svName, $this->svIP, $this->svPort, $this->svMap, $this->svPlayers, $this->svStatus, $this->svRank);
 
-        // Replace '' in each array item, and show each svVar if debugging enabled
+        // Show each svVar if debugging enabled
         for($i = 0; $i < count($this->svVars); $i++) {
             if(DEBUG_ENABLED && isset($this->svVars[$i])) {
                 debug($this->svVars[$i]);
             }
-
-            $this->svVars[$i] = str_replace("'", "", $this->svVars[$i]);
         }
 
         // Set vars if server is offline
