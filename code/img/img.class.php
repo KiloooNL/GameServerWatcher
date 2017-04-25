@@ -157,7 +157,7 @@ class bannerImage {
                 $this->red = $this->green = $this->blue = 0;
                 break;
             case 'grey':
-                $this-> red = $this->green = $this->blue = 128;
+                $this->red = $this->green = $this->blue = 128;
         }
 
         // Allocate the color
