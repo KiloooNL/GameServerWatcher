@@ -147,4 +147,4 @@ if(DEBUG_ECHO) {
 $svRank = "1st"; // TODO: Scrape this information from gametracker.rs in the future for a true rank.
 ?>
 
-<img src="../img/img.class.php?svName='<?php echo $query['name']; ?>'&svAddress='<?php echo $serverIP; ?>'&svPort='<?php echo $serverPort; ?>'&svStatus='<?php echo $svStatus; ?>'&svPlayers='<?php echo $query['players']; ?>'&svMax='<?php echo $query['max']; ?>'&svRank='<?php echo $svRank; ?>'&svMap='<?php echo $query['map']; ?>'&svShortName='css'" class="border" width="560" height="95" align="middle" />
+<img src="../img/img.class.php?svName=<?php echo $query['name']; ?>&svAddress=<?php echo $serverIP; ?>&svPort=<?php echo $serverPort; ?>&svStatus=<?php echo $svStatus; ?>&svPlayers=<?php echo $query['players']; ?>&svMax=<?php echo $query['max']; ?>&svRank=<?php echo $svRank; ?>&svMap=<?php echo $query['map']; ?>&svShortName=css" class="border" width="560" height="95" align="middle" />
