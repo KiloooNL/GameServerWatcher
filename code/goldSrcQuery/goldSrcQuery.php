@@ -13,8 +13,18 @@
  */
 
 require_once("../../config/config.php");
-$serverIP = "213.238.173.151";
-$serverPort = 27015;    // SRCDS Default Port is: 27015.
+
+// Check if server IP & port are already parsed
+if(isset($_GET['serverIP'])) {
+    $serverIP = $_GET['serverIP'];
+
+    if(isset($_GET['serverPort'])) {
+        $serverPort = $_GET['serverPort'];
+    }
+} else {
+    $serverIP = "192.168.1.147";
+    $serverPort = 27016;    // SRCDS Default Port is: 27015.
+}
 
 /******
  * microtime_float()
@@ -544,28 +554,59 @@ if(DEBUG_ECHO) {
         debug("Error in socket.");
     } else if($serverCon == 1) {
         debug("Server is up.");
-    }
-    echo "Server Address: "             . $svAddress    . "<br/>"; // IP Address
-    echo "Server Hostname: "            . $svHostName   . "<br/>"; // Hostname
-    echo "Current map: "                . $svMap        . "<br/>"; // Current map
-    echo "Server mod: "                 . $svModName    . "<br/>"; // Server mod
-    echo "Server description: "         . $svDesc       . "<br/>"; // Server description
-    echo "Current players: "            . $svPlayers    . "<br/>"; // Current players
-    echo "Max players: "                . $svMax        . "<br/>"; // Max players
-    echo "Protocol: "                   . $svProtocol   . "<br/>"; // Protocol
-    echo "Server type: "                . $svSvrType    . "<br/>"; // Server Type
-    echo "Server OS: "                  . $svSvrOS      . "<br/>"; // Server OS
-    echo "Server requires a password: " . $svPass       . "<br/>"; // Server Password
-    echo "Server running a mod: "       . $svIsMod      . "<br/>"; // Server is running mod?
-    echo "Mod HTTP: "                   . $svModHTTP    . "<br/>"; // Mod website
-    echo "Mod FTP: "                    . $svModFTP     . "<br/>"; // Mod FTP
-    echo "Server version: "             . $svSvrVer     . "<br/>"; // Server version
-    echo "Server size: "                . $svSvrSize    . "<br/>"; // Server size
-    echo "Server only: "                . $svSvrOnly    . "<br/>"; // Server only
-    echo "Server VAC Secure: "          . $svSecure     . "<br/>"; // VAC Secure?
-    echo "Server ping (rounded): "      . round($svPing). "ms<br/>"; // Server ping
-    echo "Server player data: "         . print_r($svPlayerData, true) . "<br/>"; // Player data
-    echo "Server rules: "               . print_r($svRules, true)      . "<br/>"; // Rules
+    } ?>
+<html>
+<head>
+    <style>
+        .datagrid table { border-collapse: collapse; text-align: left; width: 30%; border: 1px solid #006699;}
+        .datagrid {font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; }
+        .datagrid table td, .datagrid table th { padding: 3px 10px; }
+        .datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );  background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');background-color:#006699; color:#ffffff; font-size: 15px; font-weight: bold; border-left: 1px solid #0070A8; }
+        .datagrid table thead th:first-child { border: none; }
+        .datagrid table tbody td { color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; }
+        .datagrid table tbody .alt td { background: #E1EEF4; color: #00496B; }
+        .datagrid table tbody td:first-child { border-left: none; }
+        .datagrid table tbody tr:last-child td { border-bottom: none; }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   .datagrid table tfoot ul a:hover { text-decoration: none;border-color: #006699; color: #FFFFFF; background: none; background-color:#00557F;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
+    </style>
+</head>
+<body>
+    <div class="datagrid">
+    <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>            <td>Server address:</td>            <td><?php echo $svAddress; ?></td></tr>
+            <tr class="alt"><td>Server host name:</td>          <td><?php echo $svHostName; ?></td></tr>
+            <tr>            <td>Server current map:</td>        <td><?php echo $svMap; ?></td></tr>
+            <tr class="alt"><td>Server mod:</td>                <td><?php echo $svModName; ?></td></tr>
+            <tr>            <td>Server description:</td>        <td><?php echo $svDesc; ?></td></tr>
+            <tr class="alt"><td>Current players:</td>           <td><?php echo $svPlayers; ?></td></tr>
+            <tr>            <td>Server max players:</td>        <td><?php echo $svMax; ?></td></tr>
+            <tr class="alt"><td>Server protocol:</td>           <td><?php echo $svProtocol; ?></td></tr>
+            <tr>            <td>Server type:</td>               <td><?php echo $svSvrType; ?></td></tr>
+            <tr class="alt"><td>Server OS:</td>                 <td><?php echo $svSvrOS; ?></td></tr>
+            <tr>            <td>Server requires a password:</td><td><?php echo $svPass; ?></td></tr>
+            <tr class="alt"><td>Server running a mod:</td>      <td><?php echo $svIsMod; ?></td></tr>
+            <tr>            <td>Server HTTP:</td>               <td><?php echo $svModHTTP; ?></td></tr>
+            <tr class="alt"><td>Server FTP:</td>                <td><?php echo $svModFTP; ?></td></tr>
+            <tr>            <td>Server version:</td>            <td><?php echo $svSvrVer; ?></td></tr>
+            <tr class="alt"><td>Server size:</td>               <td><?php echo $svSvrSize; ?></td></tr>
+            <tr>            <td>Server only:</td>               <td><?php echo $svSvrOnly; ?></td></tr>
+            <tr class="alt"><td>Server VAC Secure:</td>         <td><?php echo $svSecure; ?></td></tr>
+            <tr>            <td>Server ping (rounded):</td>     <td><?php echo round($svPing); ?>ms</td></tr>
+            <tr class="alt"><td>Server player data:</td>        <td><?php echo print_r($svPlayerData, true); ?></td></tr>
+            <tr>            <td>Server rules:</td>              <td><?php print_r($svRules, true) ?></td></tr>
+            </tbody>
+        </table>
+    </div>
+<?php
 }
 ?>
+</body>
+</html>
 <img src="../img/img.class.php?svName='<?php echo $svHostName;?>'&svAddress='<?php echo $serverIP ?>'&svPort='<?php echo $serverPort; ?>'&svStatus='<?php echo $svStatus; ?>'&svPlayers='<?php echo $svPlayers;?>'&svMax='<?php echo $svMax; ?>'&svRank='1st'&svMap='<?php echo $svMap;?>'&svShortName=hl" class="border" width="560" height="95" align="middle" />
