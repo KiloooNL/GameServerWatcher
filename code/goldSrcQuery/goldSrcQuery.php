@@ -555,7 +555,7 @@ if(DEBUG_ECHO) {
     } else if($serverCon == 1) {
         debug("Server is up.");
     } ?>
-<html>
+<!DOCTYPE html>
 <head>
     <style>
         .datagrid table { border-collapse: collapse; text-align: left; width: 30%; border: 1px solid #006699;}
@@ -567,7 +567,7 @@ if(DEBUG_ECHO) {
         .datagrid table tbody .alt td { background: #E1EEF4; color: #00496B; }
         .datagrid table tbody td:first-child { border-left: none; }
         .datagrid table tbody tr:last-child td { border-bottom: none; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   .datagrid table tfoot ul a:hover { text-decoration: none;border-color: #006699; color: #FFFFFF; background: none; background-color:#00557F;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
+        .datagrid table tfoot ul a:hover { text-decoration: none;border-color: #006699; color: #FFFFFF; background: none; background-color:#00557F;}div.dhtmlx_window_active, div.dhx_modal_cover_dv { position: fixed !important; }
     </style>
 </head>
 <body>
@@ -607,6 +607,6 @@ if(DEBUG_ECHO) {
 <?php
 }
 ?>
+<img src="../img/img.class.php?svName=<?php echo $svHostName;?>&svAddress=<?php echo $serverIP ?>&svPort=<?php echo $serverPort; ?>&svStatus=<?php echo $svStatus; ?>&svPlayers=<?php echo $svPlayers;?>&svMax=<?php echo $svMax; ?>&svRank=1st&svMap=<?php echo $svMap;?>&svShortName=hl" class="border" width="560" height="95" align="middle" />
 </body>
 </html>
-<img src="../img/img.class.php?svName='<?php echo $svHostName;?>'&svAddress='<?php echo $serverIP ?>'&svPort='<?php echo $serverPort; ?>'&svStatus='<?php echo $svStatus; ?>'&svPlayers='<?php echo $svPlayers;?>'&svMax='<?php echo $svMax; ?>'&svRank='1st'&svMap='<?php echo $svMap;?>'&svShortName=hl" class="border" width="560" height="95" align="middle" />
