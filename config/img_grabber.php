@@ -201,6 +201,9 @@ $grabImages = new getMapImages();
 //		grabImages($game);
 //     }
 
+// TODO: Convert JPG to PNG
+//       and resize images to 109 x 81
+
 $grabImages->css();
 $grabImages->hl1();
 $grabImages->quake3();
