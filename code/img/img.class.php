@@ -319,7 +319,7 @@ class bannerImage {
 
     function destroyBanner($image) {
         // Save PNG image and free memory
-        debug("Drawing PNG image...");
+        debug("Drawing PNG image... (Size: " . imagesx($image) . " x " . imagesy($image) . ")");
         // imagepng(source, to, quality0-9, filters)
         imagepng($image, NULL, 0);
 
