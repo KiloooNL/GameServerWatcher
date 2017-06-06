@@ -15,7 +15,7 @@ require_once("img.config.php");
 
 // Disable header(content) when debugging is enabled for easier view of code
 if(!DEBUG_ENABLED) {
-    header("Content-type: image/png");
+   header("Content-type: image/png");
 }
 
 class bannerImage {
@@ -321,13 +321,14 @@ class bannerImage {
         // Save PNG image and free memory
         debug("Drawing PNG image... (Size: " . imagesx($image) . " x " . imagesy($image) . ")");
         // imagepng(source, to, quality0-9, filters)
-        imagepng($image, NULL, 0);
+        imagepng($image);
 
-        if(is_resource($image)) {
+        if (is_resource($image)) {
             debug("Destroying PNG image...");
             imagedestroy($image);
         }
     }
+
 }
 $myBanner = new bannerImage();
 $myBanner->createBanner();
