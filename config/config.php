@@ -100,5 +100,7 @@ define('Q3_INC_PATH', Q3_ROOT . "inc/");        // Path to inc. files
 define('INC_PREFIX', 'inc.');                    // Prefix for .inc files
 define('INC_POSTFIX', '.php');                  // Postfix for .inc files
 define('SOCK_TIMEOUT', '10');                   // Socket timeout in ms - TODO: Make this a global config var for ALL game server queries
-
-require_once(Q3_ROOT . "class/class.aux.php");
+define('IS_QUAKE_RESOURCE', false);
+if(IS_QUAKE_RESOURCE) {
+    require_once(Q3_ROOT . "class/class.aux.php");
+}
