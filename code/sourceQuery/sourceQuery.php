@@ -12,6 +12,14 @@
  *
  */
 
+/**
+ * Supported games:
+ *  - 240 - Counter-Strike: Source
+ *
+ *
+ *
+ */
+
 // Server IP / Port
 $serverIP = "119.252.190.71";
 $serverPort = 27195;
@@ -39,7 +47,7 @@ function sourceQuery($serverIP, $serverPort)
         "map"         => "",
         "dir"         => "",
         "description" => "",
-        "version"     => "",);
+        "version"     => "");
 
     $result = "";
     $svStats = "";
@@ -105,6 +113,7 @@ function sourceQuery($serverIP, $serverPort)
     $info['os']         = chr(ord($result[$i])); $i++;
     $info['password']   = ord($result[$i]); $i++;
     $info['secure']     = ord($result[$i]); $i++;
+    $info['ping'] = $junkHead;
 
     while(ord($result[$i]) != "%00") {
         $info['version'] .= $result[$i];
